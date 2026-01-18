@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍣 Sushi Delivery - Меню</title>
+    <title>🍣 TokyoGo - Меню</title>
     <style>
         * {
             margin: 0;
@@ -22,7 +23,7 @@
             color: white;
             padding: 20px;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -142,14 +143,14 @@
             background: white;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: all 0.3s;
             cursor: pointer;
         }
 
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         .product-image {
@@ -238,7 +239,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -255,7 +256,7 @@
             max-width: 500px;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             animation: slideUp 0.3s ease;
         }
 
@@ -264,6 +265,7 @@
                 transform: translateY(50px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -390,7 +392,8 @@
             color: #333;
         }
 
-        .form-group input, .form-group textarea {
+        .form-group input,
+        .form-group textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #ddd;
@@ -423,9 +426,10 @@
         }
     </style>
 </head>
+
 <body>
     <div class="header">
-        <h1>🍣 Sushi Delivery</h1>
+        <h1>🍣 TokyoGo</h1>
         <p>Свежие суши • 45–60 минут доставки</p>
     </div>
 
@@ -481,7 +485,7 @@
                     ✅ Заказ принят! Номер: <span id="orderNumber"></span><br>
                     Ожидайте доставки в течение 45-60 минут
                 </div>
-                
+
                 <form id="orderForm" style="display:block;">
                     <div class="form-group">
                         <label>👤 Имя</label>
@@ -501,7 +505,8 @@
                     </div>
                     <div class="form-group">
                         <label>💳 Способ оплаты</label>
-                        <select id="paymentMethod" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
+                        <select id="paymentMethod"
+                            style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
                             <option value="cash">💵 Наличные при доставке</option>
                             <option value="card">💳 Карта (при доставке)</option>
                             <option value="payme">📱 Payme</option>
@@ -516,16 +521,16 @@
     <script>
         // Товары с категориями
         const products = [
-            { id: 1, name: "Филадельфия", price: 35000, description: "Лосось, сливочный сыр, огурец", category: "rolls", badge: "🔥 Популярный", emoji: "🍣" },
-            { id: 2, name: "Калифорния", price: 32000, description: "Краб, авокадо, огурец, кунжут", category: "rolls", badge: null, emoji: "🍣" },
-            { id: 3, name: "Нигири Лосось", price: 30000, description: "Кусочек лосося на рисе", category: "sushi", badge: null, emoji: "🍣" },
-            { id: 4, name: "Нигири Тунец", price: 33000, description: "Кусочек тунца на рисе", category: "sushi", badge: null, emoji: "🍣" },
-            { id: 5, name: "Унаги", price: 40000, description: "Угорь, соус унаги, кунжут", category: "rolls", badge: "🌶️ Острый", emoji: "🍣" },
-            { id: 6, name: "Дракон", price: 38000, description: "Креветка, авокадо, сливочный сыр", category: "premium", badge: "⭐ Лучший", emoji: "🐉" },
-            { id: 7, name: "Суши микс", price: 45000, description: "Ассортимент из 6 кусочков", category: "sushi", badge: null, emoji: "🍣" },
-            { id: 8, name: "Спайси", price: 34000, description: "Кальмар, чили, кунжут", category: "rolls", badge: "🔥 Острый", emoji: "🍣" },
-            { id: 9, name: "Премиум", price: 55000, description: "Лосось, икра, сливочный сыр", category: "premium", badge: "👑 Премиум", emoji: "👑" },
-            { id: 10, name: "Веган", price: 28000, description: "Авокадо, огурец, морковь, кунжут", category: "rolls", badge: "🌱 Веган", emoji: "🥒" },
+            { id: 1, name: "Филадельфия", price: 35000, description: "Лосось, сливочный сыр, огурец", category: "rolls", badge: "🔥 Популярный", image: "img/s1.png" },
+            { id: 2, name: "Калифорния", price: 32000, description: "Краб, авокадо, огурец, кунжут", category: "rolls", badge: null, image: "img/s2.png" },
+            { id: 3, name: "Нигири Лосось", price: 30000, description: "Кусочек лосося на рисе", category: "sushi", badge: null, image: "img/s3.png" },
+            { id: 4, name: "Нигири Тунец", price: 33000, description: "Кусочек тунца на рисе", category: "sushi", badge: null, image: "img/s4.png" },
+            { id: 5, name: "Унаги", price: 40000, description: "Угорь, соус унаги, кунжут", category: "rolls", badge: "🌶️ Острый", image: "img/s5.png" },
+            { id: 6, name: "Дракон", price: 38000, description: "Креветка, авокадо, сливочный сыр", category: "premium", badge: "⭐ Лучший", image: "img/s6.png" },
+            { id: 7, name: "Суши микс", price: 45000, description: "Ассортимент из 6 кусочков", category: "sushi", badge: null, image: "img/s7.png" },
+            { id: 8, name: "Спайси", price: 34000, description: "Кальмар, чили, кунжут", category: "rolls", badge: "🔥 Острый", image: "img/s8.png" },
+            { id: 9, name: "Премиум", price: 55000, description: "Лосось, икра, сливочный сыр", category: "premium", badge: "👑 Премиум", image: "img/s9.png" },
+            { id: 10, name: "Веган", price: 28000, description: "Авокадо, огурец, морковь, кунжут", category: "rolls", badge: "🌱 Веган", image: "img/s10.png" },
         ];
 
         let cart = [];
@@ -554,8 +559,7 @@
                 card.className = 'product-card';
                 card.innerHTML = `
                     <div class="product-image">
-                        <div style="font-size: 100px;">${product.emoji}</div>
-                        ${product.badge ? `<div class="badge">${product.badge}</div>` : ''}
+                        <img src="${product.image}" alt="${product.name}" onerror="this.style.display='none'">
                     </div>
                     <div class="product-info">
                         <div class="product-name">${product.name}</div>
@@ -708,4 +712,5 @@
         });
     </script>
 </body>
+
 </html>
