@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель 🍣</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8c42 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            color: #ff6b6b;
+            border-bottom-color: #ff6b6b;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* PRODUCTS TAB */
+        .products-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #ff6b6b;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: #ff5555;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-danger {
+            background: #f74747;
+            color: white;
+            padding: 8px 12px;
+        }
+
+        .btn-danger:hover {
+            background: #e63e3e;
+        }
+
+        .products-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .product-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-info {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .product-actions button {
+            flex: 1;
+        }
+
+        /* ORDERS TAB */
+        .orders-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .order-row {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .order-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-number {
+            font-weight: 600;
+            color: #ff6b6b;
+        }
+
+        .order-customer {
+            font-size: 13px;
+        }
+
+        .order-phone {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .order-status {
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-confirmed {
+            background: #cfe2ff;
+            color: #084298;
+        }
+
+        .status-shipped {
+            background: #cff4fc;
+            color: #055160;
+        }
+
+        .status-delivered {
+            background: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #ff6b6b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .alert-success {
+            background: #d1e7dd;
+            color: #0f5132;
+            border: 1px solid #badbcc;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #842029;
+            border: 1px solid #f5c2c7;
+        }
+
+        @media (max-width: 768px) {
+            .products-section {
+                grid-template-columns: 1fr;
+            }
+
+            .order-row {
+                grid-template-columns: 1fr;
+            }
+
+            .products-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍣 TokyoGo Admin Panel</h1>
+            <p>Управление товарами и заказами</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('products')">📦 Товары</button>
+            <button class="tab-btn" onclick="switchTab('orders')">📋 Заказы</button>
+            <button class="tab-btn" onclick="switchTab('settings')">⚙️ Настройки</button>
+        </div>
+
+        <!-- PRODUCTS TAB -->
+        <div id="products" class="tab-content active">
+            <div class="products-section">
+                <div class="form-card">
+                    <h2>➕ Добавить товар</h2>
+                    <div id="addProductAlert"></div>
+                    <form onsubmit="addProduct(event)">
+                        <div class="form-group">
+                            <label>Категория</label>
+                            <select id="productCategory" required>
+                                <option value="">Выбери категорию</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Название</label>
+                            <input type="text" id="productName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Описание</label>
+                            <input type="text" id="productDescription">
+                        </div>
+                        <div class="form-group">
+                            <label>Ингредиенты</label>
+                            <textarea id="productIngredients"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Цена (₽)</label>
+                            <input type="number" id="productPrice" min="0" step="0.01" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Бейдж (HIT, NEW, АКЦИЯ)</label>
+                            <input type="text" id="productBadge">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Добавить товар</button>
+                    </form>
+                </div>
+
+                <div class="form-card">
+                    <h2>📊 Товары</h2>
+                    <div id="productsList" class="products-list loading">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ORDERS TAB -->
+        <div id="orders" class="tab-content">
+            <div class="form-card">
+                <h2>📋 Все заказы</h2>
+                <div id="ordersList" class="orders-table loading">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS TAB -->
+        <div id="settings" class="tab-content">
+            <div class="form-card">
+                <h2>⚙️ Настройки</h2>
+                <div class="form-group">
+                    <label>Токен Telegram бота</label>
+                    <input type="password" id="botToken" value="" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Chat ID админа</label>
+                    <input type="text" id="adminChatId" value="" disabled>
+                </div>
+                <div class="form-group">
+                    <label>URL Mini App</label>
+                    <input type="text" id="miniAppUrl" value="" disabled>
+                </div>
+                <p style="margin-top: 20px; color: #666; font-size: 13px;">
+                    💡 Настройки хранятся в файле .env<br>
+                    Измени их в текстовом редакторе и перезагрузи сервер
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://192.168.56.1:8443';
+        let categories = [];
+        let products = [];
+        let orders = [];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', init);
+
+        async function init() {
+            await loadCategories();
+            await loadProducts();
+            await loadOrders();
+        }
+
+        // CATEGORIES
+        async function loadCategories() {
+            try {
+                const res = await fetch(`${API_BASE}/api/categories`);
+                categories = await res.json();
+                renderCategorySelect();
+            } catch (e) {
+                console.error('Ошибка загрузки категорий:', e);
+            }
+        }
+
+        function renderCategorySelect() {
+            const select = document.getElementById('productCategory');
+            select.innerHTML = '<option value="">Выбери категорию</option>' +
+                categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        }
+
+        // PRODUCTS
+        async function loadProducts() {
+            try {
+                const res = await fetch(`${API_BASE}/api/products`);
+                products = await res.json();
+                renderProductsList();
+            } catch (e) {
+                console.error('Ошибка загрузки товаров:', e);
+            }
+        }
+
+        function renderProductsList() {
+            const container = document.getElementById('productsList');
+            container.innerHTML = products.map(p => `
+                <div class="product-item">
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-info">
+                        <strong>Цена:</strong> ${p.price}₽<br>
+                        <strong>Категория:</strong> ${categories.find(c => c.id === p.category_id)?.name || 'N/A'}<br>
+                        ${p.badge ? `<strong>Бейдж:</strong> ${p.badge}<br>` : ''}
+                    </div>
+                    <div class="product-actions">
+                        <button class="btn btn-danger" onclick="deleteProduct(${p.id})">Удалить</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function addProduct(e) {
+            e.preventDefault();
+
+            const product = {
+                category_id: parseInt(document.getElementById('productCategory').value),
+                name: document.getElementById('productName').value,
+                description: document.getElementById('productDescription').value,
+                ingredients: document.getElementById('productIngredients').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                badge: document.getElementById('productBadge').value || null,
+                image_url: null
+            };
+
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/products`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(product)
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    showAlert('addProductAlert', '✅ Товар добавлен!', 'success');
+                    e.target.reset();
+                    await loadProducts();
+                } else {
+                    showAlert('addProductAlert', '❌ Ошибка при добавлении', 'error');
+                }
+            } catch (e) {
+                console.error('Ошибка:', e);
+                showAlert('addProductAlert', '❌ Ошибка сервера', 'error');
+            }
+        }
+
+        async function deleteProduct(productId) {
+            if (!confirm('Удалить товар?')) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/products/${productId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    await loadProducts();
+                    alert('✅ Товар удалён');
+                }
+            } catch (e) {
+                console.error('Ошибка:', e);
+                alert('❌ Ошибка удаления');
+            }
+        }
+
+        // ORDERS
+        async function loadOrders() {
+            try {
+                const res = await fetch(`${API_BASE}/api/admin/orders`);
+                orders = await res.json();
+                renderOrdersList();
+            } catch (e) {
+                console.error('Ошибка загрузки заказов:', e);
+            }
+        }
+
+        function renderOrdersList() {
+            const container = document.getElementById('ordersList');
+
+            if (orders.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px; color: #999;">Заказов нет</div>';
+                return;
+            }
+
+            const header = `
+                <div class="order-row" style="font-weight: 600; background: #f5f5f5;">
+                    <div>Номер заказа</div>
+                    <div>Клиент</div>
+                    <div>Телефон</div>
+                    <div>Статус</div>
+                </div>
+            `;
+
+            const rows = orders.map(o => `
+                <div class="order-row">
+                    <div class="order-number">#${o.order_number}</div>
+                    <div class="order-customer">${o.username}</div>
+                    <div class="order-phone">${o.phone}</div>
+                    <div>
+                        <span class="order-status status-${o.status}">${translateStatus(o.status)}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = header + rows;
+        }
+
+        function translateStatus(status) {
+            const translations = {
+                'pending': '⏳ Ожидание',
+                'confirmed': '✅ Подтверждён',
+                'shipped': '🚚 В пути',
+                'delivered': '🎉 Доставлен',
+                'cancelled': '❌ Отменён'
+            };
+            return translations[status] || status;
+        }
+
+        // TABS
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'orders') {
+                loadOrders();
+            }
+        }
+
+        function showAlert(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+            setTimeout(() => {
+                element.innerHTML = '';
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
