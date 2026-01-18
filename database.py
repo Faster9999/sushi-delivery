@@ -1,27 +1,23 @@
 import sqlite3
 import json
-from datetime import datetime
-from pathlib import Path
 
-DB_PATH = Path("sushi.db")
+DB_PATH = "sushi.db"
 
 def init_db():
-    """Инициализация БД"""
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     
-    # Категории
-    c.execute('''
+    # Создаём таблицы
+    c.execute("""
         CREATE TABLE IF NOT EXISTS categories (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT UNIQUE NOT NULL,
-            slug TEXT UNIQUE NOT NULL,
+            name TEXT NOT NULL,
+            slug TEXT UNIQUE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-    ''')
+    """)
     
-    # Товары
-    c.execute('''
+    c.execute("""
         CREATE TABLE IF NOT EXISTS products (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             category_id INTEGER NOT NULL,
@@ -33,43 +29,34 @@ def init_db():
             badge TEXT,
             is_active INTEGER DEFAULT 1,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (category_id) REFERENCES categories(id)
+            FOREIGN KEY(category_id) REFERENCES categories(id)
         )
-    ''')
+    """)
     
-    # Заказы
-    c.execute('''
+    c.execute("""
         CREATE TABLE IF NOT EXISTS orders (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            telegram_user_id INTEGER NOT NULL,
+            telegram_user_id INTEGER,
             username TEXT,
-            phone TEXT NOT NULL,
-            address TEXT NOT NULL,
-            items TEXT NOT NULL,
+            phone TEXT,
+            address TEXT,
+            items TEXT,
+            total_price REAL,
             comment TEXT,
-            total_price REAL NOT NULL,
             payment_method TEXT DEFAULT 'cash',
-            status TEXT DEFAULT 'pending',
             order_number TEXT UNIQUE,
+            status TEXT DEFAULT 'pending',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
-    ''')
+    """)
     
     conn.commit()
-    conn.close()
-    print("✅ БД инициализирована")
-
-def seed_db():
-    """Добавление тестовых данных"""
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
     
+    # Добавляем категории
     categories = [
-        ("Сеты", "sets"),
         ("Роллы", "rolls"),
-        ("Запечённые роллы", "hot-rolls"),
+        ("Суши", "sushi"),
         ("Напитки", "drinks"),
-        ("Соусы", "sauces"),
     ]
     
     for name, slug in categories:
@@ -78,30 +65,36 @@ def seed_db():
         except sqlite3.IntegrityError:
             pass
     
-    products = [
-        (1, "Сет Премиум", "8 штук асортированных роллов", "Лосось, авокадо, огурец", 450, None, "HIT"),
-        (2, "Филадельфия", "Сливочный сыр, лосось, авокадо", "Нори, рис, сливочный сыр, лосось, авокадо", 320, None, None),
-        (2, "Калифорния", "Крабовое мясо, авокадо, огурец", "Нори, рис, крабовое мясо, авокадо, огурец", 290, None, "NEW"),
-        (3, "Запечённая Филадельфия", "С сыром и кунжутом сверху", "Нори, рис, сливочный сыр, лосось, авокадо, кунжут", 380, None, None),
-        (4, "Coca-Cola", "Объем 330мл", "Coca-Cola", 50, None, None),
-        (4, "Вода", "Чистая питьевая вода 500мл", "Вода", 30, None, None),
-        (5, "Соевый соус", "Порция 50мл", "Соевый соус", 15, None, None),
-        (5, "Васаби", "Острый соус", "Васаби", 20, None, None),
+    conn.commit()
+    
+    # Добавляем суши (цена от 30000 до 55000 сум)
+    sushi_products = [
+        (1, "Филадельфия", "Классический ролл с лососем", "Лосось, сливочный сыр, огурец", 35000, "https://github.com/Faster9999/sushi-delivery/raw/main/img/s1.png", "🔥 Популярный"),
+        (1, "Калифорния", "Ролл с крабом и авокадо", "Краб, авокадо, огурец, кунжут", 32000, "https://github.com/Faster9999/sushi-delivery/raw/main/img/s2.png", None),
+        (2, "Нигири Лосось", "Кусочек лосося на рисе", "Лосось, рис", 30000, "https://github.com/Faster9999/sushi-delivery/raw/main/img/s3.png", None),
+        (2, "Нигири Тунец", "Кусочек тунца на рисе", "Тунец, рис", 33000, "https://github.com/Faster9999/sushi-delivery/raw/main/img/s4.png", None),
+        (1, "Унаги", "Ролл с угрём и соусом", "Угорь, соус унаги, кунжут", 40000, "https://github.com/Faster9999/sushi-delivery/raw/main/img/s5.png", "🌶️ Острый"),
+        (1, "Дракон", "Красивый ролл с авокадо сверху", "Креветка, авокадо, сливочный сыр", 38000, "https://github.com/Faster9999/sushi-delivery/raw/main/img/s6.png", "⭐ Лучший"),
+        (2, "Суши микс", "Ассортимент из 6 кусочков", "Лосось, тунец, креветка", 45000, "https://github.com/Faster9999/sushi-delivery/raw/main/img/s7.png", None),
+        (1, "Спайси", "Острый ролл с кальмаром", "Кальмар, чили, кунжут", 34000, "https://github.com/Faster9999/sushi-delivery/raw/main/img/s8.png", "🔥 Острый"),
+        (1, "Премиум", "Ролл с икрой и лососем", "Лосось, икра, сливочный сыр", 55000, "https://github.com/Faster9999/sushi-delivery/raw/main/img/s9.png", "👑 Премиум"),
+        (1, "Веган", "Ролл с овощами", "Авокадо, огурец, морковь, кунжут", 28000, "https://github.com/Faster9999/sushi-delivery/raw/main/img/s10.png", "🌱 Веган"),
     ]
     
-    for cat_id, name, description, ingredients, price, image, badge in products:
+    for category_id, name, description, ingredients, price, image_url, badge in sushi_products:
         try:
             c.execute(
                 "INSERT INTO products (category_id, name, description, ingredients, price, image_url, badge) VALUES (?, ?, ?, ?, ?, ?, ?)",
-                (cat_id, name, description, ingredients, price, image, badge)
+                (category_id, name, description, ingredients, price, image_url, badge)
             )
         except sqlite3.IntegrityError:
             pass
     
     conn.commit()
     conn.close()
-    print("✅ Тестовые данные добавлены")
+    
+    print("✅ БД инициализирована")
+    print("✅ Добавлены товары")
 
 if __name__ == "__main__":
     init_db()
-    seed_db()
