@@ -256,8 +256,30 @@
         }
 
         .nav-icon {
-            font-size: 24px;
+            width: 24px;
+            height: 24px;
             margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .nav-item.active .nav-icon {
+            color: #ff6b6b;
+            /* Оранжевый основной цвет */
+        }
+
+        .nav-item.active .nav-icon svg {
+            fill: #ff6b6b;
+        }
+
+        .nav-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: #999;
+            transition: fill 0.3s;
         }
 
         .cart-badge {
@@ -636,22 +658,45 @@
     </div>
 
     <!-- BOTTOM NAVIGATION -->
+    <!-- BOTTOM NAVIGATION -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="openMenu()">
-            <div class="nav-icon">🏠</div>
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg>
+            </div>
             <div>Меню</div>
         </div>
+
         <div class="nav-item" onclick="openCart()">
-            <div class="nav-icon">🛒</div>
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
+                </svg>
+            </div>
             <div>Корзина</div>
             <div class="cart-badge" id="cartBadge" style="display:none;">0</div>
         </div>
+
         <div class="nav-item" onclick="openOrders()">
-            <div class="nav-icon">📦</div>
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
+                </svg>
+            </div>
             <div>Заказы</div>
         </div>
+
         <div class="nav-item" onclick="openProfile()">
-            <div class="nav-icon">👤</div>
+            <div class="nav-icon">
+                <svg viewBox="0 0 24 24">
+                    <path
+                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
+            </div>
             <div>Профиль</div>
         </div>
     </div>
@@ -924,28 +969,44 @@
 
         // MODALS
         function openMenu() {
+            updateNavActive('menu');
+        }
+
+        function updateNavActive(section) {
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            event.target.closest('.nav-item').classList.add('active');
+
+            if (section === 'menu') {
+                document.querySelectorAll('.nav-item')[0].classList.add('active');
+            } else if (section === 'cart') {
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+            } else if (section === 'orders') {
+                document.querySelectorAll('.nav-item')[2].classList.add('active');
+            } else if (section === 'profile') {
+                document.querySelectorAll('.nav-item')[3].classList.add('active');
+            }
         }
 
         function openCart() {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            event.target.closest('.nav-item').classList.add('active');
+            updateNavActive('cart');
             document.getElementById('cartModal').classList.add('active');
+        }
+
+        function openOrders() {
+            updateNavActive('orders');
+            alert('🚚 Активные заказы...');
+        }
+
+        function openProfile() {
+            updateNavActive('profile');
+            renderProfile();
+            document.getElementById('profileModal').classList.add('active');
         }
 
         function closeCart() {
             document.getElementById('cartModal').classList.remove('active');
         }
 
-        function openOrders() {
-            alert('🚚 Активные заказы:\n\nНо у тебя пока нет заказов. Закажи что-нибудь!');
-        }
 
-        function openProfile() {
-            renderProfile();
-            document.getElementById('profileModal').classList.add('active');
-        }
 
         function closeProfile() {
             document.getElementById('profileModal').classList.remove('active');
