@@ -1,1186 +1,620 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍣 Sushi Delivery - Меню</title>
+    <title>TokyoGo - Sushi Delivery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=eec8e995-4275-4bec-8833-0f91289ae2eb&lang=ru_RU"></script>
     <style>
+        :root {
+            --primary: #FF6B00; /* Более оранжевый цвет как на фото */
+            --bg-color: #FAFAFA;
+            --text-dark: #1F1F1F;
+            --text-grey: #9CA3AF;
+            --card-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-            padding-bottom: 70px;
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-dark);
+            padding-bottom: 90px; /* Отступ для нижнего меню */
+        }
+
+        .container {
+            padding: 0 20px;
         }
 
         /* ===== HEADER ===== */
-        .header {
-            background: rgba(255, 107, 107, 0.9);
-            color: white;
-            padding: 15px 20px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            border-radius: 0 0 20px 20px;
-            margin: 10px;
-            backdrop-filter: blur(10px);
-        }
-
-        .header-top {
+        .top-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            padding: 20px 20px 10px;
         }
 
-        .header-title {
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .language-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .search-box {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .search-box input {
-            flex: 1;
-            padding: 12px 15px;
-            border: none;
-            border-radius: 25px;
-            font-size: 14px;
-            background: #f5f5f5;
-        }
-
-        .search-btn {
+        .user-avatar {
             width: 45px;
             height: 45px;
             border-radius: 50%;
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        .address-info {
-            background: rgba(0, 0, 0, 0.1);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        .address-info:hover {
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        /* ===== MAIN CONTENT ===== */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 15px 20px;
-        }
-
-        /* ===== CATEGORIES ===== */
-        .categories {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            margin: 20px 0;
-            padding: 10px 0;
-            scroll-behavior: smooth;
-        }
-
-        .categories::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .categories::-webkit-scrollbar-track {
+            overflow: hidden;
             background: #eee;
         }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
 
-        .categories::-webkit-scrollbar-thumb {
-            background: #ff6b6b;
-            border-radius: 2px;
-        }
-
-        .category-btn {
-            padding: 0;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: #ff6b6b;
-            color: white;
-            border: none;
+        .location-block {
+            text-align: center;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            white-space: nowrap;
-            transition: all 0.3s;
-            flex-shrink: 0;
+        }
+        .loc-label { font-size: 12px; color: var(--text-grey); }
+        .loc-value { font-size: 14px; font-weight: 600; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 4px; }
+        
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            background: #fff;
+            border-radius: 50%;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            line-height: 1;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .notification-dot {
+            position: absolute;
+            top: 10px; right: 10px;
+            width: 8px; height: 8px;
+            background: red;
+            border-radius: 50%;
+            border: 1px solid #fff;
         }
 
-        .category-btn.active {
-            background: #ff6b6b;
-            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        /* ===== MAIN TITLE ===== */
+        .main-title {
+            padding: 10px 20px;
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.3;
         }
 
-        .category-btn:not(.active) {
+        /* ===== SEARCH BAR ===== */
+        .search-section {
+            display: flex;
+            gap: 15px;
+            padding: 10px 20px;
+            margin-bottom: 10px;
+        }
+
+        .search-input-box {
+            flex: 1;
             background: #fff;
-            color: #ff6b6b;
-            border: 2px solid #ddd;
+            border-radius: 12px;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .search-input-box input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+        }
+        .filter-btn {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(255, 107, 0, 0.3);
+            cursor: pointer;
         }
 
-        .category-btn:hover {
-            border-color: #ff6b6b;
+        /* ===== SECTION HEADER ===== */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
         }
+        .section-title { font-size: 18px; font-weight: 600; }
+        .see-all { color: var(--primary); font-size: 13px; font-weight: 500; text-decoration: none; }
 
-        /* ===== PRODUCTS ===== */
+        /* ===== CATEGORIES (CAPSULES) ===== */
+        .categories-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding: 0 20px 20px;
+            scrollbar-width: none; /* Hide scrollbar Firefox */
+        }
+        .categories-scroll::-webkit-scrollbar { display: none; }
+
+        .cat-capsule {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #fff;
+            padding: 6px 16px 6px 6px;
+            border-radius: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+            cursor: pointer;
+            white-space: nowrap;
+            border: 1px solid transparent;
+        }
+        .cat-capsule.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
+        }
+        .cat-icon {
+            width: 32px;
+            height: 32px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .cat-text { font-size: 13px; font-weight: 500; }
+
+        /* ===== PRODUCT CARDS (MODERN) ===== */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            margin-bottom: 20px;
+            padding: 0 20px;
         }
-
 
         .product-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s;
-            cursor: pointer;
+            background: #fff;
+            border-radius: 20px;
+            padding: 12px;
+            position: relative;
+            box-shadow: var(--card-shadow);
             display: flex;
             flex-direction: column;
+            transition: transform 0.2s;
         }
+        .product-card:active { transform: scale(0.98); }
 
-        .product-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        .product-image {
+        /* Image styling */
+        .card-img-wrapper {
             width: 100%;
-            height: 120px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff8c42 100%);
+            height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 50px;
-            position: relative;
+            margin-bottom: 10px;
         }
-
-        .product-image img {
+        .card-img-wrapper img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            /* Эффект тени под суши как на фото */
+            filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
         }
 
-        .badge {
+        .fav-icon {
             position: absolute;
-            top: 5px;
-            right: 5px;
-            background: #ffd700;
-            color: #ff6b6b;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: bold;
+            top: 10px; right: 10px;
+            color: #ff4757;
+            font-size: 18px;
+            cursor: pointer;
         }
 
-        .product-info {
-            padding: 10px;
+        .card-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-
-        .product-name {
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 3px;
-            color: #333;
-        }
-
-        .product-description {
+        .card-desc {
             font-size: 11px;
-            color: #777;
-            margin-bottom: 8px;
-            line-height: 1.3;
+            color: var(--text-grey);
+            margin-bottom: 12px;
         }
 
-        .product-footer {
+        .card-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            padding-top: 12px;
-            border-top: 1px solid #f0f0f0;
+            margin-top: auto;
         }
 
-        .product-price {
-            background: #ff6b6b;
+        .price-btn {
+            background: var(--primary);
             color: white;
-            padding: 8px 12px;
+            border: none;
             border-radius: 8px;
-            font-size: 13px;
-            font-weight: bold;
-            flex: 1;
-            text-align: center;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        .add-btn {
-            background: #f0f0f0;
-            color: #333;
-            border: none;
-            padding: 8px 12px;
+        .add-btn-small {
+            background: #F3F4F6;
+            color: var(--text-dark);
+            width: 32px;
+            height: 32px;
             border-radius: 8px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            font-weight: bold;
             font-size: 16px;
         }
 
-        .add-btn:hover {
-            background: #ff6b6b;
+        /* ===== PROMO BANNER ===== */
+        .promo-banner {
+            margin: 25px 20px;
+            background: #FFF0E5; /* Светло-персиковый */
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .promo-text { z-index: 1; }
+        .promo-title { font-size: 18px; font-weight: 700; margin-bottom: 5px; }
+        .promo-title span { color: var(--primary); }
+        .promo-sub { font-size: 12px; color: var(--text-grey); margin-bottom: 15px; }
+        .shop-now-btn {
+            background: var(--primary);
             color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .promo-img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            transform: rotate(-15deg);
         }
 
-        /* ===== BOTTOM NAVIGATION ===== */
+        /* ===== BOTTOM NAV ===== */
         .bottom-nav {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             background: white;
-            border-top: 1px solid #ddd;
+            padding: 10px 30px 20px;
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             align-items: center;
-            z-index: 99;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.03);
+            z-index: 100;
+            border-radius: 20px 20px 0 0;
         }
-
         .nav-item {
-            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 8px 5px;
+            gap: 4px;
+            color: #C0C0C0;
             cursor: pointer;
-            text-decoration: none;
-            color: #999;
-            font-size: 11px;
-            font-weight: 600;
-            transition: all 0.3s;
-            position: relative;
         }
+        .nav-item.active { color: var(--primary); }
+        .nav-icon svg { width: 24px; height: 24px; fill: currentColor; }
 
-        .nav-item.active {
-            color: #ff6b6b;
-        }
-
-        .nav-icon {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 2px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #999;
-            transition: color 0.3s;
-        }
-
-        .nav-item.active .nav-icon {
-            color: #ff6b6b;
-            /* Оранжевый основной цвет */
-        }
-
-        .nav-item.active .nav-icon svg {
-            fill: #ff6b6b;
-        }
-
-        .nav-icon svg {
-            width: 24px;
-            height: 24px;
-            fill: #999;
-            transition: fill 0.3s;
-        }
-
-        .cart-badge {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: #ff6b6b;
-            color: white;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        /* ===== MODALS ===== */
+        /* ===== MODALS (Same functionality, updated style) ===== */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
             z-index: 1000;
             align-items: flex-end;
-            justify-content: center;
         }
-
-        .modal.active {
-            display: flex;
-        }
-
+        .modal.active { display: flex; }
         .modal-content {
             background: white;
-            border-radius: 20px 20px 0 0;
             width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(100px);
-            }
-
-            to {
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff8c42 100%);
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 20px 20px 0 0;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-        }
-
-        .modal-body {
             padding: 20px;
+            border-radius: 25px 25px 0 0;
+            animation: slideUp 0.3s;
         }
-
-        /* ===== ADDRESS MODAL ===== */
-        .address-form {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .form-group label {
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-        }
-
-        .form-group input {
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #ff6b6b;
-            box-shadow: 0 0 5px rgba(255, 107, 107, 0.2);
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff8c42 100%);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary:hover {
-            transform: scale(1.02);
-        }
-
-        /* ===== PROFILE ===== */
-        .profile-section {
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .profile-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff8c42 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-        }
-
-        .user-details h3 {
-            font-size: 14px;
-            margin-bottom: 3px;
-        }
-
-        .user-details p {
-            font-size: 12px;
-            color: #777;
-        }
-
-        .login-btn {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .logout-btn {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .menu-item {
-            padding: 12px 0;
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.2s;
-        }
-
-        .menu-item:hover {
-            color: #ff6b6b;
-            padding-left: 5px;
-        }
-
-        /* ===== CART ===== */
-        .cart-empty {
-            text-align: center;
-            padding: 40px 20px;
-            color: #999;
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background: #f9f9f9;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .cart-item-info {
-            flex: 1;
-        }
-
-        .cart-item-name {
-            font-weight: bold;
-            font-size: 13px;
-        }
-
-        .cart-item-price {
-            color: #ff6b6b;
-            font-weight: bold;
-            font-size: 12px;
-            margin-top: 3px;
-        }
-
-        .qty-control {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .qty-btn {
-            background: white;
-            border: 1px solid #ddd;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 12px;
-        }
-
-        #mapContainer {
-            border: 2px solid #ff6b6b;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        #mapContainer.hidden {
-            display: none;
-        }
-
-        .cart-total {
-            background: #f0f0f0;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            margin: 15px 0;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .checkout-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff8c42 100%);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        @media (max-width: 480px) {
-            .products-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
-            }
-        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        /* Helpers */
+        .hidden { display: none !important; }
     </style>
-    <script src="https://api-maps.yandex.ru/2.1/?apikey=eec8e995-4275-4bec-8833-0f91289ae2eb&lang=ru_RU"></script>
 </head>
-
 <body>
-    <!-- HEADER -->
-    <div class="header">
-        <div class="header-top">
-            <div class="header-title">🍣 TokyoGo</div>
-            <button class="language-btn" onclick="toggleLanguage()">RU / EN</button>
-        </div>
-        <div class="address-info" onclick="openAddressModal()">
-            📍 <span id="addressText">Нажми для установки адреса</span>
-        </div>
-    </div>
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="🔍 Поиск...">
-        <button class="search-btn" onclick="search()">🔍</button>
-    </div>
-    <!-- MAIN CONTENT -->
-    <div class="container">
-        <!-- CATEGORIES -->
-        <div class="categories" id="categoriesContainer"></div>
 
-        <!-- PRODUCTS GRID -->
-        <div class="products-grid" id="productsGrid"></div>
+    <div class="top-header">
+        <div class="user-avatar" onclick="openProfile()">
+            <img src="https://ui-avatars.com/api/?name=User&background=FF6B00&color=fff" alt="User">
+        </div>
+        <div class="location-block" onclick="openAddressModal()">
+            <div class="loc-label">Доставка в ▾</div>
+            <div class="loc-value">
+                <span id="headerAddress">Укажите адрес</span>
+            </div>
+        </div>
+        <div class="notification-btn" onclick="alert('Уведомлений нет')">
+            🔔
+            <div class="notification-dot"></div>
+        </div>
     </div>
 
-    <!-- ADDRESS MODAL -->
+    <div class="main-title">
+        Что вы хотите<br>заказать сегодня?
+    </div>
+
+    <div class="search-section">
+        <div class="search-input-box">
+            <span>🔍</span>
+            <input type="text" id="searchInput" placeholder="Найти суши, роллы..." oninput="search()">
+        </div>
+        <div class="filter-btn" onclick="alert('Фильтры')">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="4" y1="21" x2="4" y2="14"></line>
+                <line x1="4" y1="10" x2="4" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12" y2="3"></line>
+                <line x1="20" y1="21" x2="20" y2="16"></line>
+                <line x1="20" y1="12" x2="20" y2="3"></line>
+                <line x1="1" y1="14" x2="7" y2="14"></line>
+                <line x1="9" y1="8" x2="15" y2="8"></line>
+                <line x1="17" y1="16" x2="23" y2="16"></line>
+            </svg>
+        </div>
+    </div>
+
+    <div class="section-header">
+        <div class="section-title">Категории</div>
+        <a href="#" class="see-all">Все</a>
+    </div>
+    <div class="categories-scroll" id="categoriesContainer">
+        </div>
+
+    <div class="section-header">
+        <div class="section-title">Популярное</div>
+        <a href="#" class="see-all">Все</a>
+    </div>
+    
+    <div class="products-grid" id="productsGrid">
+        </div>
+
+    <div class="promo-banner">
+        <div class="promo-text">
+            <div class="promo-title">Скидка <span>30%</span></div>
+            <div class="promo-sub">На первый заказ<br>каждый день!</div>
+            <button class="shop-now-btn">Заказать</button>
+        </div>
+        <img src="https://cdn-icons-png.flaticon.com/512/2224/2224268.png" class="promo-img" alt="Sushi">
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="updateNav(this, 'menu')">
+            <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+        </div>
+        <div class="nav-item" onclick="openCart()">
+            <div class="nav-icon" style="position:relative;">
+                <svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                <span id="cartBadge" style="position:absolute; top:-5px; right:-8px; background:var(--primary); color:white; font-size:10px; width:16px; height:16px; border-radius:50%; display:none; align-items:center; justify-content:center;">0</span>
+            </div>
+        </div>
+        <div class="nav-item" onclick="alert('Избранное')">
+            <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>
+        </div>
+        <div class="nav-item" onclick="openProfile()">
+            <div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+        </div>
+    </div>
+
     <div class="modal" id="addressModal">
         <div class="modal-content">
-            <div class="modal-header">
-                📍 Адрес доставки
-                <button class="close-btn" onclick="closeAddressModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div id="mapContainer" style="width: 100%; height: 300px; border-radius: 10px; margin-bottom: 15px;">
-                </div>
-                <div class="address-form">
-                    <div class="form-group">
-                        <label>Город</label>
-                        <input type="text" id="city" placeholder="Например: Ташкент" value="Ташкент">
-                    </div>
-                    <div class="form-group">
-                        <label>Улица</label>
-                        <input type="text" id="street" placeholder="Улица и номер дома">
-                    </div>
-                    <div class="form-group">
-                        <label>Квартира / Офис</label>
-                        <input type="text" id="apartment" placeholder="Квартира, офис, помещение">
-                    </div>
-                    <button class="btn-primary" onclick="saveAddress()">Сохранить адрес</button>
-                </div>
-            </div>
+            <h3 style="margin-bottom:15px;">📍 Адрес доставки</h3>
+            <div id="mapContainer" style="width:100%; height:200px; background:#eee; border-radius:15px; margin-bottom:15px;"></div>
+            <input type="text" id="cityInput" placeholder="Город" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:10px;">
+            <input type="text" id="streetInput" placeholder="Улица, дом" style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:10px;">
+            <button onclick="saveAddress()" style="width:100%; background:var(--primary); color:white; padding:12px; border:none; border-radius:12px; font-weight:600;">Сохранить</button>
+            <button onclick="document.getElementById('addressModal').classList.remove('active')" style="width:100%; margin-top:10px; background:transparent; color:#999; border:none;">Закрыть</button>
         </div>
     </div>
 
-    <!-- CART MODAL -->
     <div class="modal" id="cartModal">
         <div class="modal-content">
-            <div class="modal-header">
-                🛒 Корзина
-                <button class="close-btn" onclick="closeCart()">&times;</button>
+            <h3>🛒 Корзина</h3>
+            <div id="cartList" style="margin:20px 0; max-height:300px; overflow-y:auto;"></div>
+            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:18px; margin-bottom:15px;">
+                <span>Итого:</span>
+                <span id="cartTotalSum">0 сум</span>
             </div>
-            <div class="modal-body">
-                <div id="cartItems"></div>
-                <div id="cartTotal" style="display:none;">
-                    <div class="cart-total">
-                        <span>Итого:</span>
-                        <span id="totalPrice">0 сум</span>
-                    </div>
-                </div>
-                <button class="checkout-btn" id="checkoutBtn" onclick="checkout()">Оформить заказ</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- PROFILE MODAL -->
-    <div class="modal" id="profileModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                👤 Профиль
-                <button class="close-btn" onclick="closeProfile()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div id="profileContent"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- BOTTOM NAVIGATION -->
-    <!-- BOTTOM NAVIGATION -->
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="openMenu()">
-            <div class="nav-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-                </svg>
-            </div>
-            <div>Меню</div>
-        </div>
-
-        <div class="nav-item" onclick="openCart()">
-            <div class="nav-icon">
-                <svg viewBox="0 0 24 24">
-                    <path
-                        d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z" />
-                </svg>
-            </div>
-            <div>Корзина</div>
-            <div class="cart-badge" id="cartBadge" style="display:none;">0</div>
-        </div>
-
-        <div class="nav-item" onclick="openOrders()">
-            <div class="nav-icon">
-                <svg viewBox="0 0 24 24">
-                    <path
-                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
-                </svg>
-            </div>
-            <div>Заказы</div>
-        </div>
-
-        <div class="nav-item" onclick="openProfile()">
-            <div class="nav-icon">
-                <svg viewBox="0 0 24 24">
-                    <path
-                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
-            </div>
-            <div>Профиль</div>
+            <button onclick="alert('Заказ оформлен!'); cart=[]; updateCart(); document.getElementById('cartModal').classList.remove('active')" style="width:100%; background:var(--primary); color:white; padding:15px; border:none; border-radius:15px; font-weight:600;">Оформить заказ</button>
+            <button onclick="document.getElementById('cartModal').classList.remove('active')" style="width:100%; margin-top:10px; background:transparent; color:#999; border:none;">Закрыть</button>
         </div>
     </div>
 
     <script>
-        // DATA
+        /* ===== DATA ===== */
         const categories = [
-            { id: 'all', name: '⭐ Все' },
-            { id: 'soups', name: '🍲 Супы' },
-            { id: 'salads', name: '🥗 Салаты' },
-            { id: 'sushi', name: '🍣 Суши' },
-            { id: 'desserts', name: '🍰 Десерты' },
-            { id: 'sauces', name: '🌶️ Соусы' },
+            { id: 'sushi', name: 'Суши', icon: '🍣' },
+            { id: 'noodles', name: 'Лапша', icon: '🍜' },
+            { id: 'rolls', name: 'Роллы', icon: '🍱' },
+            { id: 'soups', name: 'Супы', icon: '🍲' },
+            { id: 'drinks', name: 'Вода', icon: '🥤' },
         ];
 
         const products = [
-            { id: 1, name: "Филадельфия", price: 35000, description: "Лосось, сыр", category: "sushi", badge: "🔥", image: "img/s1.png" },
-            { id: 2, name: "Калифорния", price: 32000, description: "Краб, авокадо", category: "sushi", badge: null, image: "img/s2.png" },
-            { id: 3, name: "Мисо суп", price: 15000, description: "Классический японский", category: "soups", badge: null, image: "img/s3.png" },
-            { id: 4, name: "Цезарь", price: 25000, description: "С курицей и сухариками", category: "salads", badge: null, image: "img/s4.png" },
-            { id: 5, name: "Унаги", price: 40000, description: "Угорь, соус", category: "sushi", badge: "⭐", image: "img/s5.png" },
-            { id: 6, name: "Тирамису", price: 20000, description: "Классический десерт", category: "desserts", badge: null, image: "img/s6.png" },
-            { id: 7, name: "Дракон", price: 38000, description: "Креветка, авокадо", category: "sushi", badge: "👑", image: "img/s7.png" },
-            { id: 8, name: "Острый соус", price: 5000, description: "Васаби и чили", category: "sauces", badge: null, image: "img/s8.png" },
-            { id: 9, name: "Премиум", price: 55000, description: "Лосось, икра", category: "sushi", badge: "👑", image: "img/s9.png" },
-            { id: 10, name: "Веган", price: 28000, description: "Овощи и кунжут", category: "sushi", badge: "🌱", image: "img/s10.png" },
+            { id: 1, name: "Филадельфия", desc: "4 шт · Лосось, сыр", price: 35000, category: "rolls", img: "https://cdn-icons-png.flaticon.com/512/3183/3183460.png" },
+            { id: 2, name: "Маки с огурцом", desc: "6 шт · Рис, огурец", price: 15000, category: "sushi", img: "https://cdn-icons-png.flaticon.com/512/3183/3183451.png" },
+            { id: 3, name: "Калифорния", desc: "4 шт · Краб, икра", price: 32000, category: "rolls", img: "https://cdn-icons-png.flaticon.com/512/3183/3183471.png" },
+            { id: 4, name: "Рамен", desc: "400г · Курица", price: 45000, category: "noodles", img: "https://cdn-icons-png.flaticon.com/512/3014/3014520.png" },
+             { id: 5, name: "Суши Сет", desc: "12 шт · Ассорти", price: 120000, category: "rolls", img: "https://cdn-icons-png.flaticon.com/512/3480/3480838.png" },
+            { id: 6, name: "Том Ям", desc: "Острый суп", price: 40000, category: "soups", img: "https://cdn-icons-png.flaticon.com/512/2038/2038933.png" },
         ];
 
         let cart = [];
-        let currentCategory = 'all';
-        let user = null;
-        let address = {};
+        let currentCat = 'sushi';
 
-        // INITIALIZATION
+        /* ===== INIT ===== */
         document.addEventListener('DOMContentLoaded', () => {
             renderCategories();
             renderProducts();
-            loadCart();
-            loadUser();
             loadAddress();
         });
 
+        /* ===== LOGIC ===== */
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
             container.innerHTML = categories.map(cat => `
-                <button class="category-btn ${cat.id === 'all' ? 'active' : ''}" onclick="filterCategory('${cat.id}')">${cat.name}</button>
+                <div class="cat-capsule ${cat.id === currentCat ? 'active' : ''}" onclick="selectCategory('${cat.id}')">
+                    <div class="cat-icon" style="color: ${cat.id === currentCat ? 'var(--primary)' : '#333'}">${cat.icon}</div>
+                    <span class="cat-text">${cat.name}</span>
+                </div>
             `).join('');
         }
 
-        function renderProducts(filter = null) {
-            const grid = document.getElementById('productsGrid');
-            grid.innerHTML = '';
-
-            const filtered = products.filter(p => {
-                const matchCategory = currentCategory === 'all' || p.category === currentCategory;
-                const matchSearch = !filter || p.name.toLowerCase().includes(filter.toLowerCase());
-                return matchCategory && matchSearch;
-            });
-
-            filtered.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    <div class="product-image">
-                        <img src="${product.image}" alt="${product.name}" onerror="this.style.display='none'">
-                        ${product.badge ? `<div class="badge">${product.badge}</div>` : ''}
-                    </div>
-                    <div class="product-info">
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-description">${product.description}</div>
-                        <div class="product-footer">
-                            <div class="product-price">${product.price.toLocaleString()} сум</div>
-                            <button class="add-btn" onclick="addToCart(${product.id})">+</button>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-        }
-
-        function filterCategory(catId) {
-            currentCategory = catId;
-            document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
+        function selectCategory(id) {
+            currentCat = id;
+            renderCategories();
             renderProducts();
         }
 
-        function addToCart(productId) {
-            const product = products.find(p => p.id === productId);
-            const existing = cart.find(item => item.id === productId);
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase();
+            
+            // Фильтрация: если категория выбрана, фильтруем по ней (если хотите показать все, добавьте id='all')
+            // Для демо показываем всё, если выбрано 'all', или фильтруем
+            // Но чтобы было "как на фото" (разные категории), оставим фильтр
+            const filtered = products.filter(p => 
+                (p.category === currentCat || currentCat === 'all') && 
+                p.name.toLowerCase().includes(searchVal)
+            );
 
-            if (existing) {
-                existing.quantity++;
-            } else {
-                cart.push({ ...product, quantity: 1 });
-            }
-
-            saveCart();
-            updateCartUI();
+            grid.innerHTML = filtered.map(p => `
+                <div class="product-card">
+                    <div class="fav-icon">♥</div>
+                    <div class="card-img-wrapper">
+                        <img src="${p.img}" alt="${p.name}">
+                    </div>
+                    <div class="card-title">${p.name}</div>
+                    <div class="card-desc">${p.desc}</div>
+                    <div class="card-bottom">
+                        <button class="price-btn" onclick="addToCart(${p.id})">${p.price.toLocaleString()} сум</button>
+                        <button class="add-btn-small" onclick="addToCart(${p.id})">🛒</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function removeFromCart(productId) {
-            cart = cart.filter(item => item.id !== productId);
-            saveCart();
-            updateCartUI();
+        function search() {
+            renderProducts();
         }
 
-        function updateQuantity(productId, change) {
-            const item = cart.find(item => item.id === productId);
-            if (item) {
-                item.quantity += change;
-                if (item.quantity <= 0) {
-                    removeFromCart(productId);
-                } else {
-                    saveCart();
-                    updateCartUI();
-                }
-            }
-        }
-
-        function updateCartUI() {
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        function addToCart(id) {
+            const prod = products.find(p => p.id === id);
+            const exist = cart.find(c => c.id === id);
+            if(exist) exist.qty++; else cart.push({...prod, qty: 1});
+            updateCart();
+            
+            // Анимация на кнопке корзины
             const badge = document.getElementById('cartBadge');
-            badge.textContent = count;
-            badge.style.display = count > 0 ? 'flex' : 'none';
-
-            const cartItems = document.getElementById('cartItems');
-            const cartTotal = document.getElementById('cartTotal');
-
-            if (cart.length === 0) {
-                cartItems.innerHTML = '<div class="cart-empty">🛒 Корзина пуста</div>';
-                cartTotal.style.display = 'none';
-            } else {
-                cartItems.innerHTML = cart.map(item => `
-                    <div class="cart-item">
-                        <div class="cart-item-info">
-                            <div class="cart-item-name">${item.name}</div>
-                            <div class="cart-item-price">${(item.price * item.quantity).toLocaleString()} сум</div>
-                        </div>
-                        <div class="qty-control">
-                            <button class="qty-btn" onclick="updateQuantity(${item.id}, -1)">−</button>
-                            <span style="width: 20px; text-align: center;">${item.quantity}</span>
-                            <button class="qty-btn" onclick="updateQuantity(${item.id}, 1)">+</button>
-                        </div>
-                    </div>
-                `).join('');
-
-                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                document.getElementById('totalPrice').textContent = total.toLocaleString() + ' сум';
-                cartTotal.style.display = 'block';
-            }
+            badge.style.transform = 'scale(1.5)';
+            setTimeout(() => badge.style.transform = 'scale(1)', 200);
         }
 
-        function saveCart() {
-            localStorage.setItem('cart', JSON.stringify(cart));
-        }
-
-        function loadCart() {
-            const saved = localStorage.getItem('cart');
-            if (saved) cart = JSON.parse(saved);
-            updateCartUI();
-        }
-
-        function saveAddress() {
-            const ymaps = window.ymaps;
-
-            address = {
-                city: document.getElementById('city').value,
-                street: document.getElementById('street').value,
-                apartment: document.getElementById('apartment').value,
-                lat: 41.2995,  // можно оставить как есть или получить из карты
-                lon: 69.2401
-            };
-
-            localStorage.setItem('address', JSON.stringify(address));
-            document.getElementById('addressText').textContent = `${address.street}, ${address.apartment}`;
-            closeAddressModal();
-        }
-
-        function loadAddress() {
-            const saved = localStorage.getItem('address');
-            if (saved) {
-                address = JSON.parse(saved);
-                if (address.street && address.apartment) {
-                    document.getElementById('addressText').textContent = `${address.street}, ${address.apartment}`;
-                }
-            }
-        }
-
-        function loadUser() {
-            const saved = localStorage.getItem('user');
-            if (saved) user = JSON.parse(saved);
-        }
-
-        function saveUser(name, phone) {
-            user = { name, phone };
-            localStorage.setItem('user', JSON.stringify(user));
-        }
-
-        function renderProfile() {
-            const content = document.getElementById('profileContent');
-            if (user) {
-                content.innerHTML = `
-                    <div class="profile-section">
-                        <div class="profile-header">
-                            <div class="user-info">
-                                <div class="user-avatar">👤</div>
-                                <div class="user-details">
-                                    <h3>${user.name}</h3>
-                                    <p>${user.phone}</p>
-                                </div>
-                            </div>
-                            <button class="logout-btn" onclick="logout()">Выход</button>
-                        </div>
-                    </div>
-                    <div class="profile-section">
-                        <div class="menu-item" onclick="alert('Акции')">🎁 Акции</div>
-                        <div class="menu-item" onclick="alert('Контакты: +998 90 123 45 67')">📞 Контакты</div>
-                        <div class="menu-item" onclick="alert('Уже установлен русский язык')">🌐 Язык</div>
-                    </div>
-                `;
-            } else {
-                content.innerHTML = `
-                    <div style="padding: 20px 0;">
-                        <div class="form-group">
-                            <label>Имя</label>
-                            <input type="text" id="loginName" placeholder="Ваше имя">
-                        </div>
-                        <div class="form-group">
-                            <label>Номер телефона</label>
-                            <input type="tel" id="loginPhone" placeholder="+998 9X XXX XXXX">
-                        </div>
-                        <button class="btn-primary" style="width: 100%;" onclick="login()">Войти</button>
-                    </div>
-                `;
-            }
-        }
-
-        function login() {
-            const name = document.getElementById('loginName').value;
-            const phone = document.getElementById('loginPhone').value;
-            if (name && phone) {
-                saveUser(name, phone);
-                renderProfile();
-            } else {
-                alert('Заполни все поля!');
-            }
-        }
-
-        function logout() {
-            user = null;
-            localStorage.removeItem('user');
-            renderProfile();
-        }
-
-        function checkout() {
-            if (!user) {
-                alert('Войди в свой аккаунт');
-                openProfile();
-                return;
-            }
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            const orderNumber = Math.random().toString().slice(2, 8);
-            alert(`✅ Заказ #${orderNumber} принят!\nИтого: ${total.toLocaleString()} сум\nОжидай доставки 45-60 минут`);
-            cart = [];
-            saveCart();
-            updateCartUI();
-            closeCart();
-        }
-
-        // MODALS
-        function openMenu() {
-            updateNavActive('menu');
-        }
-
-        function updateNavActive(section) {
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-
-            if (section === 'menu') {
-                document.querySelectorAll('.nav-item')[0].classList.add('active');
-            } else if (section === 'cart') {
-                document.querySelectorAll('.nav-item')[1].classList.add('active');
-            } else if (section === 'orders') {
-                document.querySelectorAll('.nav-item')[2].classList.add('active');
-            } else if (section === 'profile') {
-                document.querySelectorAll('.nav-item')[3].classList.add('active');
-            }
+        function updateCart() {
+            const totalQty = cart.reduce((sum, i) => sum + i.qty, 0);
+            const badge = document.getElementById('cartBadge');
+            badge.textContent = totalQty;
+            badge.style.display = totalQty > 0 ? 'flex' : 'none';
         }
 
         function openCart() {
-            updateNavActive('cart');
-            document.getElementById('cartModal').classList.add('active');
+            const modal = document.getElementById('cartModal');
+            const list = document.getElementById('cartList');
+            const totalEl = document.getElementById('cartTotalSum');
+            
+            if(cart.length === 0) {
+                list.innerHTML = '<p style="text-align:center; color:#999">Корзина пуста 😔</p>';
+                totalEl.textContent = '0 сум';
+            } else {
+                let total = 0;
+                list.innerHTML = cart.map(item => {
+                    total += item.price * item.qty;
+                    return `
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px;">
+                        <div>
+                            <div style="font-weight:bold; font-size:14px;">${item.name}</div>
+                            <div style="color:var(--primary); font-size:12px;">${item.price} x ${item.qty}</div>
+                        </div>
+                        <div style="font-weight:bold;">${(item.price * item.qty).toLocaleString()}</div>
+                    </div>`;
+                }).join('');
+                totalEl.textContent = total.toLocaleString() + ' сум';
+            }
+            modal.classList.add('active');
         }
 
-        function openOrders() {
-            updateNavActive('orders');
-            alert('🚚 Активные заказы...');
-        }
-
-        function openProfile() {
-            updateNavActive('profile');
-            renderProfile();
-            document.getElementById('profileModal').classList.add('active');
-        }
-
-        function closeCart() {
-            document.getElementById('cartModal').classList.remove('active');
-        }
-
-
-
-        function closeProfile() {
-            document.getElementById('profileModal').classList.remove('active');
-        }
-
+        /* ===== ADDRESS & UTILS ===== */
         function openAddressModal() {
             document.getElementById('addressModal').classList.add('active');
-
-            // Инициализируем карту через 100ms (дожидаемся появления модала)
+            // Инициализация карты (заглушка)
             setTimeout(() => {
-                ymaps.ready(function () {
-                    // Координаты Ташкента по умолчанию
-                    let latitude = 41.2995;
-                    let longitude = 69.2401;
-
-                    // Если уже есть адрес - берём его координаты
-                    if (address.lat && address.lon) {
-                        latitude = address.lat;
-                        longitude = address.lon;
-                    }
-
-                    // Создаём карту
-                    const map = new ymaps.Map('mapContainer', {
-                        center: [latitude, longitude],
-                        zoom: 15,
-                        controls: ['zoomControl', 'fullscreenControl']
+                // Если Яндекс карты загружены, можно инициализировать
+                if(window.ymaps) {
+                    ymaps.ready(() => {
+                        if(document.getElementById('mapContainer').innerHTML === '') {
+                             new ymaps.Map('mapContainer', { center: [41.2995, 69.2401], zoom: 12 });
+                        }
                     });
-
-                    // Добавляем метку (булавку)
-                    const placemark = new ymaps.Placemark(
-                        [latitude, longitude],
-                        { balloonContent: 'Ваш адрес доставки' },
-                        { draggable: true }
-                    );
-
-                    map.geoObjects.add(placemark);
-
-                    // Когда пользователь перемещает метку
-                    placemark.events.add('dragend', function () {
-                        const coords = placemark.geometry.getCoordinates();
-                        latitude = coords[0];
-                        longitude = coords[1];
-
-                        // Обратное геокодирование (координаты → адрес)
-                        ymaps.geocode(coords).then(function (res) {
-                            const firstGeoObject = res.geoObjects.get(0);
-                            const address = firstGeoObject.getAddressLine();
-                            document.getElementById('street').value = address;
-                        });
-                    });
-
-                    // Когда кликаем на карту
-                    map.events.add('click', function (e) {
-                        const coords = e.get('coords');
-                        placemark.geometry.setCoordinates(coords);
-
-                        // Получаем адрес по координатам
-                        ymaps.geocode(coords).then(function (res) {
-                            const firstGeoObject = res.geoObjects.get(0);
-                            const address = firstGeoObject.getAddressLine();
-                            document.getElementById('street').value = address;
-                        });
-                    });
-                });
+                }
             }, 100);
         }
 
-        function closeAddressModal() {
+        function saveAddress() {
+            const city = document.getElementById('cityInput').value || 'Ташкент';
+            const street = document.getElementById('streetInput').value || 'Центр';
+            const fullAddr = `${city}, ${street}`;
+            localStorage.setItem('userAddress', fullAddr);
+            document.getElementById('headerAddress').textContent = street;
             document.getElementById('addressModal').classList.remove('active');
         }
 
-        function toggleLanguage() {
-            alert('Язык: Русский / English\n(В демо версии только русский)');
-        }
-    </script>
-    <script>// Запрашиваем разрешение на геолокацию
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                // Если разрешено - получаем координаты
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                // Отправляем в Яндекс.Карты
-                openMapWithCoordinates(lat, lon);
-            },
-            () => {
-                // Если отказано - открываем карту
-                openMapSelector();
+        function loadAddress() {
+            const addr = localStorage.getItem('userAddress');
+            if(addr) {
+                document.getElementById('headerAddress').textContent = addr.split(',')[1];
             }
-        );</script>
-    <script>
-        function openMapWithCoordinates(lat, lon) {
-            // Создаём карту в модальном окне
-            const map = new ymaps.Map('mapContainer', {
-                center: [lat, lon],
-                zoom: 15
-            });
-
-            // Добавляем метку (булавку)
-            const placemark = new ymaps.Placemark([lat, lon], {
-                balloonContent: 'Ваш адрес'
-            });
-
-            map.geoObjects.add(placemark);
-
-            // Пользователь может перемещать метку и подтверждать адрес
         }
 
+        function updateNav(el, type) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+        }
+
+        function openProfile() { alert('Профиль'); }
     </script>
-    <script>map.events.add('click', function (e) {
-            const coords = e.get('coords');
-
-            // Обратное геокодирование (координаты → адрес)
-            ymaps.geocode(coords).then(function (res) {
-                const address = res.geoObjects.get(0).getAddressLine();
-                document.getElementById('addressText').textContent = address;
-            });
-        });</script>
 </body>
-
 </html>
