@@ -21,20 +21,23 @@
 
         /* ===== HEADER ===== */
         .header {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ff8c42 100%);
+            background: rgba(255, 107, 107, 0.9);
             color: white;
             padding: 15px 20px;
             position: sticky;
             top: 0;
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 0 0 20px 20px;
+            margin: 10px;
+            backdrop-filter: blur(10px);
         }
 
         .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .header-title {
@@ -52,16 +55,43 @@
             font-size: 12px;
         }
 
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 25px;
+            font-size: 14px;
+            background: #f5f5f5;
+        }
+
+        .search-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
         .address-info {
             background: rgba(0, 0, 0, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 13px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 5px;
             cursor: pointer;
-            transition: all 0.3s;
+            flex: 1;
         }
 
         .address-info:hover {
@@ -99,22 +129,36 @@
         }
 
         .category-btn {
-            padding: 10px 20px;
-            border: 2px solid #ddd;
-            background: white;
-            border-radius: 25px;
+            padding: 0;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            color: white;
+            border: none;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             white-space: nowrap;
             transition: all 0.3s;
             flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1;
         }
 
         .category-btn.active {
             background: #ff6b6b;
-            color: white;
-            border-color: #ff6b6b;
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        }
+
+        .category-btn:not(.active) {
+            background: #fff;
+            color: #ff6b6b;
+            border: 2px solid #ddd;
         }
 
         .category-btn:hover {
@@ -124,18 +168,21 @@
         /* ===== PRODUCTS ===== */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
             margin-bottom: 20px;
         }
 
+
         .product-card {
             background: white;
-            border-radius: 12px;
+            border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             transition: all 0.3s;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
         }
 
         .product-card:hover {
@@ -194,30 +241,36 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 5px;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
         }
 
         .product-price {
-            font-size: 14px;
+            background: #ff6b6b;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
             font-weight: bold;
-            color: #ff6b6b;
+            flex: 1;
+            text-align: center;
         }
 
         .add-btn {
-            background: #ff6b6b;
-            color: white;
+            background: #f0f0f0;
+            color: #333;
             border: none;
-            padding: 5px 10px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 11px;
-            transition: all 0.2s;
-            flex: 1;
+            font-size: 16px;
         }
 
         .add-btn:hover {
-            background: #ff5252;
+            background: #ff6b6b;
+            color: white;
         }
 
         /* ===== BOTTOM NAVIGATION ===== */
@@ -568,6 +621,7 @@
         @media (max-width: 480px) {
             .products-grid {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
             }
         }
     </style>
@@ -585,7 +639,10 @@
             📍 <span id="addressText">Нажми для установки адреса</span>
         </div>
     </div>
-
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Поиск...">
+        <button class="search-btn" onclick="search()">🔍</button>
+    </div>
     <!-- MAIN CONTENT -->
     <div class="container">
         <!-- CATEGORIES -->
