@@ -23,11 +23,24 @@
         }
 
         .container {
-            text-align: center;
-            padding: 40px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 20px;
-            max-width: 500px;
+            width: 100%;
+            height: 100vh;
+            padding: 0;
+            background: #000;
+            border-radius: 0;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
         h1 {
@@ -61,13 +74,53 @@
             transform: scale(1.05);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
+
+        @media (min-width: 1024px) {
+            video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
+        /* Для планшета */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
+
+        /* Для мобилы - портретная ориентация */
+        @media (max-width: 767px) {
+            video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            body {
+                background: #000;
+            }
+        }
+
+        /* Для широких экранов (FullHD) */
+        @media (min-width: 1920px) {
+            video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <video autoplay muted id="introVideo">
+        <video autoplay muted playsinline id="introVideo">
             <source src="video.mp4" type="video/mp4">
+            <source src="video.webm" type="video/webm">
         </video>
     </div>
     <script>
