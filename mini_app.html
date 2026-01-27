@@ -1076,7 +1076,7 @@
             <img src="${item.img}" class="cart-item-img" alt="${item.name}">
             <div class="cart-item-info">
                 <div class="cart-item-title">${item.name}</div>
-                <div class="cart-item-price">${item.price.toLocaleString()} LE</div>
+                <div class="cart-item-price">${item.price.toLocaleString()} сум</div>
             </div>
             <div class="cart-item-controls">
                 <div class="qty-control">
@@ -1093,21 +1093,12 @@
             });
             html += '</div>';
 
-            // Расчеты (налог и доставка для примера)
-            const tax = subtotal * 0.05; // 5% налог
-            const delivery = 15000; // Фиксированная доставка
-            const total = subtotal + tax + delivery;
-
             // Блок сводки (Summary)
             html += `
         <div class="cart-summary">
             <div class="summary-row">
                 <span>Sub total</span>
                 <span>${subtotal.toLocaleString()} сум</span>
-            </div>
-            <div class="summary-row">
-                <span>Delivery</span>
-                <span>${delivery.toLocaleString()} сум</span>
             </div>
             <div class="summary-row total">
                 <span>TOTAL :</span>
