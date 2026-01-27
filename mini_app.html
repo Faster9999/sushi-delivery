@@ -786,12 +786,16 @@
         }
 
         /* Global Click to Close Modals */
-        window.onclick = function(event) {
-            // Закрываем модалки кликом по фону, КРОМЕ окна регистрации (оно обязательно)
-            if (event.target.classList.contains('modal') && event.target.id !== 'authModal') {
-                event.target.classList.remove('active');
-            }
+        document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (event) => {
+        // Проверяем: клик был по самому затемненному фону (modal),
+        // а не по его содержимому (modal-content)?
+        // И проверяем, что это не окно авторизации (authModal)
+        if (event.target === modal && modal.id !== 'authModal') {
+            modal.classList.remove('active');
         }
+    });
+});
     </script>
 </body>
 </html>
