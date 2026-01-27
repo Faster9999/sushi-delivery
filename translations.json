@@ -1,0 +1,50 @@
+{
+  "ru": {
+    "menu": "Меню",
+    "cart": "Корзина",
+    "orders": "Заказы",
+    "profile": "Профиль",
+    "search": "🔍 Поиск суши...",
+    "categories": "Категории",
+    "all": "⭐ Все",
+    "soups": "🍲 Супы",
+    "salads": "🥗 Салаты",
+    "sushi": "🍣 Суши",
+    "desserts": "🍰 Десерты",
+    "sauces": "🌶️ Соусы",
+    "address": "📍 Нажми для установки адреса",
+    "language": "RU / EN / UZ"
+  },
+  "en": {
+    "menu": "Menu",
+    "cart": "Cart",
+    "orders": "Orders",
+    "profile": "Profile",
+    "search": "🔍 Search sushi...",
+    "categories": "Categories",
+    "all": "⭐ All",
+    "soups": "🍲 Soups",
+    "salads": "🥗 Salads",
+    "sushi": "🍣 Sushi",
+    "desserts": "🍰 Desserts",
+    "sauces": "🌶️ Sauces",
+    "address": "📍 Click to set address",
+    "language": "EN / RU / UZ"
+  },
+  "uz": {
+    "menu": "Menyusi",
+    "cart": "Savatchasi",
+    "orders": "Buyurtmalar",
+    "profile": "Profil",
+    "search": "🔍 Sushi qidirish...",
+    "categories": "Kategoriyalar",
+    "all": "⭐ Hammasi",
+    "soups": "🍲 Shurvalar",
+    "salads": "🥗 Salatlar",
+    "sushi": "🍣 Sushi",
+    "desserts": "🍰 Shirinliklar",
+    "sauces": "🌶️ Soslar",
+    "address": "📍 Manzil o'rnatish uchun bosing",
+    "language": "UZ / RU / EN"
+  }
+}

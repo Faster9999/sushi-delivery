@@ -318,6 +318,39 @@
             font-size: 16px;
         }
 
+        .rating-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .rating-star {
+            color: #FFC107;
+            /* Желтый цвет звезды */
+            font-size: 14px;
+        }
+
+        .fav-card-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .fav-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* Красное сердечко для активного состояния */
+        .fav-active {
+            color: #ff4757 !important;
+        }
+
         /* ===== PROMO BANNER ===== */
         .promo-banner {
             margin: 25px 20px;
@@ -771,7 +804,7 @@
                     style="position:absolute; top:-5px; right:-8px; background:var(--primary); color:white; font-size:10px; width:16px; height:16px; border-radius:50%; display:none; align-items:center; justify-content:center;">0</span>
             </div>
         </div>
-        <div class="nav-item" onclick="alert('Избранное')">
+        <div class="nav-item" onclick="openFavorites()">
             <div class="nav-icon"><svg viewBox="0 0 24 24">
                     <path
                         d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
@@ -806,6 +839,18 @@
             <div id="cartList"></div>
 
             <div id="cartTotalBlock" class="hidden"></div>
+        </div>
+    </div>
+    <div class="modal" id="favModal">
+        <div class="modal-content" style="background: #FAFAFA; height: 90vh; overflow-y: auto;">
+            <div class="cart-header-row">
+                <div class="cart-back-btn" onclick="document.getElementById('favModal').classList.remove('active')">←
+                </div>
+                <div class="cart-title-text">Favourite</div>
+            </div>
+
+            <div class="products-grid" id="favGrid">
+            </div>
         </div>
     </div>
     <div class="modal" id="profileModal">
@@ -977,7 +1022,7 @@
 
             grid.innerHTML = filtered.map(p => `
                 <div class="product-card">
-                    <div class="fav-icon">♥</div>
+                    <div class="fav-icon ${favorites.includes(p.id) ? 'fav-active' : ''}" onclick="toggleFavorite(${p.id})">❤️</div>
                     <div class="card-img-wrapper">
                         <img src="${p.img}" alt="${p.name}">
                     </div>
@@ -1128,6 +1173,59 @@
             updateCart();
             renderCartItems();
         }
+        // Добавьте это к переменным
+        let favorites = [1, 2, 4]; // Для примера добавим ID 1, 2 и 4 как избранные сразу
+
+        // Функция открытия окна избранного
+        function openFavorites() {
+            const modal = document.getElementById('favModal');
+            modal.classList.add('active');
+            renderFavorites();
+        }
+
+        // Функция переключения избранного (добавить/удалить)
+        function toggleFavorite(id) {
+            if (favorites.includes(id)) {
+                favorites = favorites.filter(favId => favId !== id);
+            } else {
+                favorites.push(id);
+            }
+            // Если мы находимся внутри окна избранного, перерисовываем его сразу
+            if (document.getElementById('favModal').classList.contains('active')) {
+                renderFavorites();
+            }
+            // Обновляем иконки на главной (опционально, если нужно)
+            renderProducts();
+        }
+
+        // Функция отрисовки (как на скриншоте)
+        function renderFavorites() {
+            const grid = document.getElementById('favGrid');
+            const favProducts = products.filter(p => favorites.includes(p.id));
+
+            if (favProducts.length === 0) {
+                grid.innerHTML = '<div style="text-align:center; width:200%; padding-top:50px; color:#999;">Список пуст 💔</div>';
+                return;
+            }
+
+            grid.innerHTML = favProducts.map(p => `
+        <div class="product-card">
+            <div class="fav-icon fav-active" onclick="toggleFavorite(${p.id})">♥</div>
+            <div class="card-img-wrapper">
+                <img src="${p.img}" alt="${p.name}">
+            </div>
+            
+            <div class="fav-card-row">
+                <div class="card-title" style="margin:0; font-size:13px;">${p.name}</div>
+                <div class="rating-badge">
+                    <span class="rating-star">★</span> 4.8
+                </div>
+            </div>
+            
+            <div class="fav-price">${p.price.toLocaleString()} сум</div>
+        </div>
+    `).join('');
+        }
 
         function saveAddress() {
             const city = document.getElementById('cityInput').value || 'Ташкент';
@@ -1152,6 +1250,36 @@
 
         function openProfile() {
             document.getElementById('profileModal').classList.add('active');
+        }
+    </script>
+    <script>
+        let currentLanguage = localStorage.getItem('language') || 'ru';
+        let translations = {};
+
+        // Загружаем переводы
+        fetch('translations.json')
+            .then(response => response.json())
+            .then(data => {
+                translations = data;
+                applyTranslations();
+            });
+
+        function applyTranslations() {
+            const t = translations[currentLanguage];
+
+            // Применяем переводы
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    el.textContent = t[key];
+                }
+            });
+        }
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+            applyTranslations();
         }
     </script>
 </body>
