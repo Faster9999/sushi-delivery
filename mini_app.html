@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>TokyoGo - Sushi Delivery</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=eec8e995-4275-4bec-8833-0f91289ae2eb&lang=ru_RU"></script>
+    
     <style>
         :root {
             --primary: #FF6B00;
@@ -69,7 +71,7 @@
         .price-btn { background: var(--primary); color: white; border: none; border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .add-btn-small { background: #F3F4F6; color: var(--text-dark); width: 32px; height: 32px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; }
 
-        /* PROMO BANNER */
+        /* PROMO BANNER (Ваш стиль) */
         .promo-banner { margin: 25px 20px; padding: 0; background: none; cursor: pointer; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
         .promo-banner img { width: 100%; height: auto; display: block; object-fit: cover; }
 
@@ -84,7 +86,7 @@
         .modal.active { display: flex; }
         .modal-content { background: white; width: 100%; padding: 20px; border-radius: 25px 25px 0 0; animation: slideUp 0.3s; max-height: 90vh; overflow-y: auto; }
         
-        /* AUTH MODAL SPECIFIC */
+        /* AUTH MODAL (NEW) */
         #authModal { align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         #authModal .modal-content { border-radius: 25px; width: 90%; max-width: 400px; padding: 30px; animation: fadeIn 0.3s; }
         .auth-title { font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 20px; }
@@ -128,7 +130,7 @@
         
         /* Language Switcher in Profile */
         .lang-switcher { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; width: 100%; padding: 0 20px; }
-        .lang-btn { flex: 1; padding: 10px; border: 1px solid #eee; background: white; border-radius: 10px; cursor: pointer; font-weight: 600; color: #999; transition: 0.2s; }
+        .lang-btn { flex: 1; padding: 10px; border: 1px solid #eee; background: white; border-radius: 10px; cursor: pointer; font-weight: 600; color: #999; transition: 0.2s; text-align: center; }
         .lang-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(255,107,0,0.2); }
 
         /* Favourite items specific */
@@ -186,8 +188,8 @@
     <div class="products-grid" id="productsGrid"></div>
 
     <div class="promo-banner" onclick="document.getElementById('productsGrid').scrollIntoView({behavior: 'smooth'})">
-        <img src="https://cdn-icons-png.flaticon.com/512/2224/2224268.png" alt="Promo Banner" style="height:150px; object-fit:contain; background:#FFF0E5;">
-    </div>
+        <img src="img/sushi.png" alt="Promo Banner" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2224/2224268.png'">
+        </div>
 
     <div class="bottom-nav">
         <div class="nav-item active" onclick="updateNav(this, 'menu')">
@@ -219,7 +221,8 @@
     <div class="modal" id="addressModal">
         <div class="modal-content">
             <h3 style="margin-bottom:15px;" data-i18n="deliveryAddr">📍 Адрес доставки</h3>
-            <div id="mapContainer" style="width:100%; height:200px; background:#eee; border-radius:15px; margin-bottom:15px; display:flex; align-items:center; justify-content:center; color:#999;">Map Mockup</div>
+            <div id="mapContainer" style="width:100%; height:200px; background:#eee; border-radius:15px; margin-bottom:15px; display:flex; align-items:center; justify-content:center; color:#999;"></div>
+            
             <input type="text" id="cityInput" class="auth-input" data-i18n-placeholder="city" placeholder="Город">
             <input type="text" id="streetInput" class="auth-input" data-i18n-placeholder="street" placeholder="Улица, дом">
             <button onclick="saveAddress()" class="auth-btn" data-i18n="save">Сохранить</button>
@@ -230,6 +233,7 @@
     <div class="modal" id="cartModal">
         <div class="modal-content">
             <div id="cartList"></div>
+            <div id="cartTotalBlock" class="hidden"></div>
         </div>
     </div>
 
@@ -292,7 +296,8 @@
     </div>
 
     <script>
-        /* ===== 1. TRANSLATIONS (i18n) ===== */
+        /* ===== 1. JSON TRANSLATIONS (i18n) ===== */
+        // Этот объект заменяет внешний файл translations.json
         const translations = {
             ru: {
                 mainTitle: "Что вы хотите<br>заказать сегодня?",
@@ -423,31 +428,35 @@
             }
         };
 
+        // Загрузка языка из памяти
         let currentLang = localStorage.getItem('tokyo_lang') || 'ru';
 
+        // Функция перевода
         function t(key) {
             return translations[currentLang][key] || key;
         }
 
+        // Обновление всех текстов на странице
         function updateTexts() {
-            // Update simple text elements
+            // Тексты
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
-                el.innerHTML = t(key); // innerHTML allows <br>
+                el.innerHTML = t(key);
             });
-            // Update placeholders
+            // Плейсхолдеры
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 el.placeholder = t(key);
             });
-            // Update active lang button
+            // Активная кнопка языка
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`btn-${currentLang}`).classList.add('active');
 
-            // Re-render dynamic content
+            // Перерисовка контента
             renderCategories();
             renderProducts();
-            renderCartItems(); // if open
+            if(document.getElementById('cartModal').classList.contains('active')) renderCartItems();
+            if(document.getElementById('favModal').classList.contains('active')) renderFavorites();
         }
 
         function setLanguage(lang) {
@@ -456,7 +465,7 @@
             updateTexts();
         }
 
-        /* ===== 2. DATA (Multi-language) ===== */
+        /* ===== 2. DATA (С поддержкой 3 языков) ===== */
         const categories = [
             { id: 'sushi', key: 'cat_sushi', icon: '🍣' },
             { id: 'noodles', key: 'cat_noodles', icon: '🍜' },
@@ -509,7 +518,7 @@
         let currentCat = 'sushi';
         let currentUser = null;
 
-        /* ===== 3. CORE LOGIC ===== */
+        /* ===== 3. LOGIC ===== */
         document.addEventListener('DOMContentLoaded', () => {
             checkAuth();
             updateTexts();
@@ -518,13 +527,14 @@
             loadAddress();
         });
 
-        /* --- Auth System --- */
+        /* --- AUTH SYSTEM (Регистрация) --- */
         function checkAuth() {
             const userStr = localStorage.getItem('tokyo_user');
             if(userStr) {
                 currentUser = JSON.parse(userStr);
                 updateProfileUI();
             } else {
+                // Если нет пользователя - открываем окно регистрации
                 document.getElementById('authModal').classList.add('active');
             }
         }
@@ -532,7 +542,7 @@
         function registerUser() {
             const name = document.getElementById('regName').value;
             const phone = document.getElementById('regPhone').value;
-            if(!name || !phone) return alert('Please fill inputs');
+            if(!name || !phone) return alert('Пожалуйста, заполните поля');
 
             currentUser = { name, phone };
             localStorage.setItem('tokyo_user', JSON.stringify(currentUser));
@@ -545,7 +555,7 @@
             if(currentUser) {
                 document.getElementById('profileNameDisplay').textContent = currentUser.name;
                 document.getElementById('profilePhoneDisplay').textContent = currentUser.phone;
-                // Generate Avatar
+                // Генерация аватарки по имени
                 const avaUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=FF6B00&color=fff&size=256`;
                 document.getElementById('profileAvatar').src = avaUrl;
                 document.getElementById('headerAvatar').src = avaUrl;
@@ -553,19 +563,19 @@
         }
 
         function logout() {
-            if(confirm('Are you sure?')) {
+            if(confirm('Выйти из аккаунта?')) {
                 localStorage.removeItem('tokyo_user');
                 location.reload();
             }
         }
 
-        /* --- Helper: Currency Format --- */
+        /* --- Currency Helper --- */
         function formatPrice(price) {
-            // 120 000 сум
+            // Формат: 120 000 сум (или so'm, UZS)
             return price.toLocaleString('ru-RU') + ' ' + t('currency');
         }
 
-        /* --- Renders --- */
+        /* --- Rendering --- */
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
             container.innerHTML = categories.map(cat => `
@@ -586,6 +596,7 @@
             const grid = document.getElementById('productsGrid');
             const searchVal = document.getElementById('searchInput').value.toLowerCase();
             
+            // Фильтрация и перевод на лету
             const filtered = products.filter(p => 
                 (p.category === currentCat || currentCat === 'all') && 
                 (p[`name_${currentLang}`].toLowerCase().includes(searchVal))
@@ -593,16 +604,20 @@
 
             grid.innerHTML = filtered.map(p => {
                 const isFav = favorites.includes(p.id);
+                // Берем название и описание в зависимости от языка
+                const name = p[`name_${currentLang}`];
+                const desc = p[`desc_${currentLang}`];
+
                 return `
                 <div class="product-card">
                     <div class="fav-icon ${isFav ? 'fav-active' : ''}" onclick="toggleFavorite(${p.id})">
                         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                     </div>
                     <div class="card-img-wrapper">
-                        <img src="${p.img}" alt="${p.name}">
+                        <img src="${p.img}" alt="${name}">
                     </div>
-                    <div class="card-title">${p[`name_${currentLang}`]}</div>
-                    <div class="card-desc">${p[`desc_${currentLang}`]}</div>
+                    <div class="card-title">${name}</div>
+                    <div class="card-desc">${desc}</div>
                     <div class="card-bottom">
                         <button class="price-btn" onclick="addToCart(${p.id})">${formatPrice(p.price)}</button>
                         <button class="add-btn-small" onclick="addToCart(${p.id})">🛒</button>
@@ -654,7 +669,6 @@
 
             cart.forEach(item => {
                 subtotal += item.price * item.qty;
-                // Use dynamic name
                 const name = item[`name_${currentLang}`];
                 html += `
                 <div class="cart-item">
@@ -743,6 +757,14 @@
         /* --- Address & Utils --- */
         function openAddressModal() {
             document.getElementById('addressModal').classList.add('active');
+            // Инициализация карты (если еще не создана)
+            setTimeout(() => {
+                if(window.ymaps && document.getElementById('mapContainer').innerHTML === "") {
+                    ymaps.ready(() => {
+                        new ymaps.Map('mapContainer', { center: [41.2995, 69.2401], zoom: 12 });
+                    });
+                }
+            }, 100);
         }
         function saveAddress() {
             const city = document.getElementById('cityInput').value || 'Tashkent';
@@ -765,6 +787,7 @@
 
         /* Global Click to Close Modals */
         window.onclick = function(event) {
+            // Закрываем модалки кликом по фону, КРОМЕ окна регистрации (оно обязательно)
             if (event.target.classList.contains('modal') && event.target.id !== 'authModal') {
                 event.target.classList.remove('active');
             }
