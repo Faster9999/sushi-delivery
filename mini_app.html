@@ -23,18 +23,46 @@
         .hidden { display: none !important; }
         .container { padding: 0 20px; }
 
-        /* HEADER */
-        .top-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 10px; }
-        .user-avatar { width: 45px; height: 45px; border-radius: 50%; overflow: hidden; background: #eee; cursor: pointer; }
-        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .location-block { text-align: center; cursor: pointer; }
-        .loc-label { font-size: 12px; color: var(--text-grey); }
-        .loc-value { font-size: 14px; font-weight: 600; color: var(--primary); display: flex; align-items: center; justify-content: center; gap: 4px; }
-        .notification-btn { width: 40px; height: 40px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); position: relative; }
-        .notification-dot { position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; background: red; border-radius: 50%; border: 1px solid #fff; }
+        /* ===== НОВЫЙ ДИЗАЙН HEADER (СОСИСКА) ===== */
+        .top-header {
+            position: fixed; /* Фиксируем сверху */
+            top: 15px;       /* Отступ сверху */
+            left: 15px;      /* Отступ слева */
+            right: 15px;     /* Отступ справа */
+            
+            /* Эффект стекла */
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            
+            /* Форма */
+            border-radius: 50px; /* Полное закругление */
+            padding: 8px 15px;   /* Внутренние отступы */
+            
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            
+            /* Тени и слои */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08); /* Мягкая тень */
+            z-index: 900;
+            border: 1px solid rgba(255,255,255,0.6); /* Тонкая обводка */
+        }
 
-        /* HERO & SEARCH */
-        .main-title { padding: 10px 20px; font-size: 24px; font-weight: 700; line-height: 1.3; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: #eee; cursor: pointer; border: 2px solid white; }
+        .user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .location-block { text-align: center; cursor: pointer; }
+        .loc-label { font-size: 10px; color: var(--text-grey); text-transform: uppercase; letter-spacing: 0.5px; }
+        .loc-value { font-size: 13px; font-weight: 700; color: var(--text-dark); display: flex; align-items: center; justify-content: center; gap: 4px; }
+        
+        .notification-btn { width: 38px; height: 38px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); position: relative; color: var(--primary); }
+        .notification-dot { position: absolute; top: 10px; right: 10px; width: 6px; height: 6px; background: red; border-radius: 50%; border: 1px solid #fff; }
+
+        /* Отступ для контента, чтобы он не залезал под новый хедер */
+        .main-title { padding: 10px 20px; font-size: 24px; font-weight: 700; line-height: 1.3; margin-top: 90px; /* ВАЖНО: Отступ сверху */ }
+
+        /* SEARCH */
         .search-section { display: flex; gap: 15px; padding: 10px 20px; margin-bottom: 10px; }
         .search-input-box { flex: 1; background: #fff; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02); }
         .search-input-box input { border: none; outline: none; width: 100%; font-family: inherit; font-size: 14px; }
@@ -71,7 +99,7 @@
         .price-btn { background: var(--primary); color: white; border: none; border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 600; cursor: pointer; }
         .add-btn-small { background: #F3F4F6; color: var(--text-dark); width: 32px; height: 32px; border-radius: 8px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; }
 
-        /* PROMO BANNER (Ваш стиль) */
+        /* PROMO BANNER */
         .promo-banner { margin: 25px 20px; padding: 0; background: none; cursor: pointer; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
         .promo-banner img { width: 100%; height: auto; display: block; object-fit: cover; }
 
@@ -81,12 +109,12 @@
         .nav-item.active { color: var(--primary); }
         .nav-icon svg { width: 24px; height: 24px; fill: currentColor; }
 
-        /* MODALS */
+        /* MODALS (Исправленные) */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 1000; align-items: flex-end; }
         .modal.active { display: flex; }
         .modal-content { background: white; width: 100%; padding: 20px; border-radius: 25px 25px 0 0; animation: slideUp 0.3s; max-height: 90vh; overflow-y: auto; }
         
-        /* AUTH MODAL (NEW) */
+        /* AUTH MODAL */
         #authModal { align-items: center; justify-content: center; backdrop-filter: blur(5px); }
         #authModal .modal-content { border-radius: 25px; width: 90%; max-width: 400px; padding: 30px; animation: fadeIn 0.3s; }
         .auth-title { font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 20px; }
@@ -128,12 +156,12 @@
         .menu-label { flex: 1; font-size: 15px; font-weight: 500; color: #333; }
         .menu-arrow-right { color: var(--primary); }
         
-        /* Language Switcher in Profile */
+        /* Language Switcher */
         .lang-switcher { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; width: 100%; padding: 0 20px; }
         .lang-btn { flex: 1; padding: 10px; border: 1px solid #eee; background: white; border-radius: 10px; cursor: pointer; font-weight: 600; color: #999; transition: 0.2s; text-align: center; }
         .lang-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(255,107,0,0.2); }
 
-        /* Favourite items specific */
+        /* Favourite items */
         .rating-badge { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #333; font-weight: 600; }
         .rating-star { color: #FFC107; font-size: 14px; }
         .fav-card-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
@@ -189,7 +217,7 @@
 
     <div class="promo-banner" onclick="document.getElementById('productsGrid').scrollIntoView({behavior: 'smooth'})">
         <img src="img/sushi.png" alt="Promo Banner" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2224/2224268.png'">
-        </div>
+    </div>
 
     <div class="bottom-nav">
         <div class="nav-item active" onclick="updateNav(this, 'menu')">
@@ -222,11 +250,10 @@
         <div class="modal-content">
             <h3 style="margin-bottom:15px;" data-i18n="deliveryAddr">📍 Адрес доставки</h3>
             <div id="mapContainer" style="width:100%; height:200px; background:#eee; border-radius:15px; margin-bottom:15px; display:flex; align-items:center; justify-content:center; color:#999;"></div>
-            
             <input type="text" id="cityInput" class="auth-input" data-i18n-placeholder="city" placeholder="Город">
             <input type="text" id="streetInput" class="auth-input" data-i18n-placeholder="street" placeholder="Улица, дом">
             <button onclick="saveAddress()" class="auth-btn" data-i18n="save">Сохранить</button>
-            <button onclick="document.getElementById('addressModal').classList.remove('active')" style="width:100%; margin-top:10px; background:transparent; color:#999; border:none;" data-i18n="close">Закрыть</button>
+            <button onclick="closeModal('addressModal')" style="width:100%; margin-top:10px; background:transparent; color:#999; border:none;" data-i18n="close">Закрыть</button>
         </div>
     </div>
 
@@ -240,7 +267,7 @@
     <div class="modal" id="favModal">
         <div class="modal-content">
             <div class="cart-header-row">
-                <div class="cart-back-btn" onclick="document.getElementById('favModal').classList.remove('active')">←</div>
+                <div class="cart-back-btn" onclick="closeModal('favModal')">←</div>
                 <div class="cart-title-text" data-i18n="favourite">Favourite</div>
             </div>
             <div class="products-grid" id="favGrid"></div>
@@ -250,7 +277,7 @@
     <div class="modal" id="profileModal">
         <div class="modal-content">
             <div class="cart-header-row">
-                <div class="cart-back-btn" onclick="document.getElementById('profileModal').classList.remove('active')">←</div>
+                <div class="cart-back-btn" onclick="closeModal('profileModal')">←</div>
                 <div class="cart-title-text" data-i18n="profile">Profile</div>
             </div>
 
@@ -296,8 +323,6 @@
     </div>
 
     <script>
-        /* ===== 1. JSON TRANSLATIONS (i18n) ===== */
-        // Этот объект заменяет внешний файл translations.json
         const translations = {
             ru: {
                 mainTitle: "Что вы хотите<br>заказать сегодня?",
@@ -318,28 +343,22 @@
                 checkout: "Оформить заказ",
                 addToCart: "В корзину",
                 currency: "сум",
-                
                 authTitle: "Добро пожаловать!",
                 namePlaceholder: "Ваше имя",
                 phonePlaceholder: "Номер телефона",
                 authBtn: "Продолжить",
-                
                 yourProfile: "Мой профиль",
                 manageAddress: "Адреса доставки",
                 paymentMethods: "Способы оплаты",
                 logout: "Выйти",
-                
                 filters: "Фильтры",
                 noNotifications: "Нет уведомлений",
                 editNotAvailable: "Редактирование пока недоступно",
-                
                 deliveryAddr: "Адрес доставки",
                 city: "Город",
                 street: "Улица, дом",
                 save: "Сохранить",
                 close: "Закрыть",
-                
-                // Categories
                 cat_sushi: "Суши", cat_noodles: "Лапша", cat_rolls: "Роллы", cat_soups: "Супы", cat_drinks: "Вода"
             },
             uz: {
@@ -361,27 +380,22 @@
                 checkout: "Buyurtma berish",
                 addToCart: "Savatga",
                 currency: "so'm",
-                
                 authTitle: "Xush kelibsiz!",
                 namePlaceholder: "Ismingiz",
                 phonePlaceholder: "Telefon raqamingiz",
                 authBtn: "Davom etish",
-                
                 yourProfile: "Mening profilim",
                 manageAddress: "Manzillar",
                 paymentMethods: "To'lov turlari",
                 logout: "Chiqish",
-                
                 filters: "Filtrlar",
                 noNotifications: "Bildirishnomalar yo'q",
                 editNotAvailable: "Tahrirlash hozircha mavjud emas",
-
                 deliveryAddr: "Yetkazib berish manzili",
                 city: "Shahar",
                 street: "Ko'cha, uy",
                 save: "Saqlash",
                 close: "Yopish",
-
                 cat_sushi: "Sushi", cat_noodles: "Lag'mon", cat_rolls: "Roll", cat_soups: "Sho'rva", cat_drinks: "Ichimlik"
             },
             en: {
@@ -403,56 +417,43 @@
                 checkout: "Checkout",
                 addToCart: "Add to cart",
                 currency: "UZS",
-                
                 authTitle: "Welcome!",
                 namePlaceholder: "Your Name",
                 phonePlaceholder: "Phone Number",
                 authBtn: "Continue",
-                
                 yourProfile: "My Profile",
                 manageAddress: "Manage Address",
                 paymentMethods: "Payment Methods",
                 logout: "Logout",
-                
                 filters: "Filters",
                 noNotifications: "No notifications",
                 editNotAvailable: "Edit not available yet",
-
                 deliveryAddr: "Delivery Address",
                 city: "City",
                 street: "Street",
                 save: "Save",
                 close: "Close",
-
                 cat_sushi: "Sushi", cat_noodles: "Noodles", cat_rolls: "Rolls", cat_soups: "Soups", cat_drinks: "Drinks"
             }
         };
 
-        // Загрузка языка из памяти
         let currentLang = localStorage.getItem('tokyo_lang') || 'ru';
 
-        // Функция перевода
         function t(key) {
             return translations[currentLang][key] || key;
         }
 
-        // Обновление всех текстов на странице
         function updateTexts() {
-            // Тексты
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 el.innerHTML = t(key);
             });
-            // Плейсхолдеры
             document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
                 const key = el.getAttribute('data-i18n-placeholder');
                 el.placeholder = t(key);
             });
-            // Активная кнопка языка
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`btn-${currentLang}`).classList.add('active');
-
-            // Перерисовка контента
             renderCategories();
             renderProducts();
             if(document.getElementById('cartModal').classList.contains('active')) renderCartItems();
@@ -465,7 +466,6 @@
             updateTexts();
         }
 
-        /* ===== 2. DATA (С поддержкой 3 языков) ===== */
         const categories = [
             { id: 'sushi', key: 'cat_sushi', icon: '🍣' },
             { id: 'noodles', key: 'cat_noodles', icon: '🍜' },
@@ -518,23 +518,32 @@
         let currentCat = 'sushi';
         let currentUser = null;
 
-        /* ===== 3. LOGIC ===== */
         document.addEventListener('DOMContentLoaded', () => {
             checkAuth();
             updateTexts();
             renderCategories();
             renderProducts();
             loadAddress();
+            
+            // ВОТ ИСПРАВЛЕННЫЙ КОД ЗАКРЫТИЯ МОДАЛОК
+            // Мы вешаем событие на window, чтобы ловить все клики
+            window.onclick = function(event) {
+                // Если клик был по элементу с классом 'modal'
+                if (event.target.classList.contains('modal')) {
+                    // И это НЕ окно авторизации (его нельзя закрыть кликом)
+                    if (event.target.id !== 'authModal') {
+                        event.target.classList.remove('active');
+                    }
+                }
+            };
         });
 
-        /* --- AUTH SYSTEM (Регистрация) --- */
         function checkAuth() {
             const userStr = localStorage.getItem('tokyo_user');
             if(userStr) {
                 currentUser = JSON.parse(userStr);
                 updateProfileUI();
             } else {
-                // Если нет пользователя - открываем окно регистрации
                 document.getElementById('authModal').classList.add('active');
             }
         }
@@ -543,10 +552,8 @@
             const name = document.getElementById('regName').value;
             const phone = document.getElementById('regPhone').value;
             if(!name || !phone) return alert('Пожалуйста, заполните поля');
-
             currentUser = { name, phone };
             localStorage.setItem('tokyo_user', JSON.stringify(currentUser));
-            
             document.getElementById('authModal').classList.remove('active');
             updateProfileUI();
         }
@@ -555,7 +562,6 @@
             if(currentUser) {
                 document.getElementById('profileNameDisplay').textContent = currentUser.name;
                 document.getElementById('profilePhoneDisplay').textContent = currentUser.phone;
-                // Генерация аватарки по имени
                 const avaUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=FF6B00&color=fff&size=256`;
                 document.getElementById('profileAvatar').src = avaUrl;
                 document.getElementById('headerAvatar').src = avaUrl;
@@ -569,13 +575,10 @@
             }
         }
 
-        /* --- Currency Helper --- */
         function formatPrice(price) {
-            // Формат: 120 000 сум (или so'm, UZS)
             return price.toLocaleString('ru-RU') + ' ' + t('currency');
         }
 
-        /* --- Rendering --- */
         function renderCategories() {
             const container = document.getElementById('categoriesContainer');
             container.innerHTML = categories.map(cat => `
@@ -595,8 +598,6 @@
         function renderProducts() {
             const grid = document.getElementById('productsGrid');
             const searchVal = document.getElementById('searchInput').value.toLowerCase();
-            
-            // Фильтрация и перевод на лету
             const filtered = products.filter(p => 
                 (p.category === currentCat || currentCat === 'all') && 
                 (p[`name_${currentLang}`].toLowerCase().includes(searchVal))
@@ -604,18 +605,14 @@
 
             grid.innerHTML = filtered.map(p => {
                 const isFav = favorites.includes(p.id);
-                // Берем название и описание в зависимости от языка
                 const name = p[`name_${currentLang}`];
                 const desc = p[`desc_${currentLang}`];
-
                 return `
                 <div class="product-card">
                     <div class="fav-icon ${isFav ? 'fav-active' : ''}" onclick="toggleFavorite(${p.id})">
                         <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
                     </div>
-                    <div class="card-img-wrapper">
-                        <img src="${p.img}" alt="${name}">
-                    </div>
+                    <div class="card-img-wrapper"><img src="${p.img}" alt="${name}"></div>
                     <div class="card-title">${name}</div>
                     <div class="card-desc">${desc}</div>
                     <div class="card-bottom">
@@ -626,13 +623,11 @@
             `}).join('');
         }
 
-        /* --- Cart Logic --- */
         function addToCart(id) {
             const prod = products.find(p => p.id === id);
             const exist = cart.find(c => c.id === id);
             if(exist) exist.qty++; else cart.push({...prod, qty: 1});
             updateCart();
-            
             const badge = document.getElementById('cartBadge');
             badge.style.transform = 'scale(1.5)';
             setTimeout(() => badge.style.transform = 'scale(1)', 200);
@@ -654,7 +649,7 @@
             const list = document.getElementById('cartList');
             list.innerHTML = `
                 <div class="cart-header-row">
-                    <div class="cart-back-btn" onclick="document.getElementById('cartModal').classList.remove('active')">←</div>
+                    <div class="cart-back-btn" onclick="closeModal('cartModal')">←</div>
                     <div class="cart-title-text">${t('myCart')}</div>
                 </div>
             `;
@@ -718,7 +713,6 @@
             renderCartItems();
         }
 
-        /* --- Favorites --- */
         function openFavorites() {
             document.getElementById('favModal').classList.add('active');
             renderFavorites();
@@ -754,10 +748,8 @@
             `).join('');
         }
 
-        /* --- Address & Utils --- */
         function openAddressModal() {
             document.getElementById('addressModal').classList.add('active');
-            // Инициализация карты (если еще не создана)
             setTimeout(() => {
                 if(window.ymaps && document.getElementById('mapContainer').innerHTML === "") {
                     ymaps.ready(() => {
@@ -784,18 +776,9 @@
         function openProfile() {
             document.getElementById('profileModal').classList.add('active');
         }
-
-        /* Global Click to Close Modals */
-        document.querySelectorAll('.modal').forEach(modal => {
-    modal.addEventListener('click', (event) => {
-        // Проверяем: клик был по самому затемненному фону (modal),
-        // а не по его содержимому (modal-content)?
-        // И проверяем, что это не окно авторизации (authModal)
-        if (event.target === modal && modal.id !== 'authModal') {
-            modal.classList.remove('active');
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
         }
-    });
-});
     </script>
 </body>
 </html>
