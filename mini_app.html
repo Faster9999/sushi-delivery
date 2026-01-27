@@ -321,25 +321,25 @@
         /* ===== PROMO BANNER ===== */
         .promo-banner {
             margin: 25px 20px;
-            background: #FFF0E5;
-            /* Светло-персиковый */
+            /* Сохраняем внешние отступы */
+            padding: 0;
+            /* Убираем внутренние отступы */
+            background: none;
+            /* Убираем фон, так как теперь там картинка */
+            cursor: pointer;
+            /* Курсор в виде руки */
             border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            /* Легкая тень для красоты */
         }
 
-        .promo-text {
-            z-index: 1;
-        }
-
-        .promo-title {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 5px;
+        .promo-banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+            /* Убираем нижний отступ у картинки */
+            object-fit: cover;
         }
 
         .promo-title span {
@@ -751,13 +751,8 @@
     <div class="products-grid" id="productsGrid">
     </div>
 
-    <div class="promo-banner">
-        <div class="promo-text">
-            <div class="promo-title">Скидка <span>30%</span></div>
-            <div class="promo-sub">На первый заказ<br>каждый день!</div>
-            <button class="shop-now-btn">Заказать</button>
-        </div>
-        <img src="https://cdn-icons-png.flaticon.com/512/2224/2224268.png" class="promo-img" alt="Sushi">
+    <div class="promo-banner" onclick="document.getElementById('productsGrid').scrollIntoView({behavior: 'smooth'})">
+        <img src="sushi/img/sushi.png" alt="Promo Banner">
     </div>
 
     <div class="bottom-nav">
