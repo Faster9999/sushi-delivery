@@ -17,36 +17,25 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg-color); color: var(--text-dark); padding-bottom: 90px; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg-color); color: var(--text-dark); padding-bottom: 120px; /* Увеличил отступ снизу */ }
         
         /* Utility */
         .hidden { display: none !important; }
         .container { padding: 0 20px; }
 
-        /* ===== НОВЫЙ ДИЗАЙН HEADER (СОСИСКА) ===== */
+        /* ===== ВЕРХНЕЕ МЕНЮ (Floating) ===== */
         .top-header {
-            position: fixed; /* Фиксируем сверху */
-            top: 15px;       /* Отступ сверху */
-            left: 15px;      /* Отступ слева */
-            right: 15px;     /* Отступ справа */
-            
-            /* Эффект стекла */
+            position: fixed;
+            top: 15px; left: 15px; right: 15px;
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            
-            /* Форма */
-            border-radius: 50px; /* Полное закругление */
-            padding: 8px 15px;   /* Внутренние отступы */
-            
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            
-            /* Тени и слои */
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08); /* Мягкая тень */
+            border-radius: 50px;
+            padding: 8px 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
             z-index: 900;
-            border: 1px solid rgba(255,255,255,0.6); /* Тонкая обводка */
+            border: 1px solid rgba(255,255,255,0.6);
         }
 
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: #eee; cursor: pointer; border: 2px solid white; }
@@ -59,8 +48,7 @@
         .notification-btn { width: 38px; height: 38px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05); position: relative; color: var(--primary); }
         .notification-dot { position: absolute; top: 10px; right: 10px; width: 6px; height: 6px; background: red; border-radius: 50%; border: 1px solid #fff; }
 
-        /* Отступ для контента, чтобы он не залезал под новый хедер */
-        .main-title { padding: 10px 20px; font-size: 24px; font-weight: 700; line-height: 1.3; margin-top: 90px; /* ВАЖНО: Отступ сверху */ }
+        .main-title { padding: 10px 20px; font-size: 24px; font-weight: 700; line-height: 1.3; margin-top: 90px; }
 
         /* SEARCH */
         .search-section { display: flex; gap: 15px; padding: 10px 20px; margin-bottom: 10px; }
@@ -85,14 +73,11 @@
         .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 0 20px; }
         .product-card { background: #fff; border-radius: 20px; padding: 12px; position: relative; box-shadow: var(--card-shadow); display: flex; flex-direction: column; }
         .product-card:active { transform: scale(0.98); transition: 0.1s; }
-        
         .card-img-wrapper { width: 100%; height: 100px; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
         .card-img-wrapper img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.1)); }
-        
         .fav-icon { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 50%; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); cursor: pointer; z-index: 2; }
         .fav-icon svg { width: 18px; height: 18px; stroke: #ff4757; stroke-width: 2; fill: none; transition: fill 0.3s; }
         .fav-icon.fav-active svg { fill: #ff4757; }
-
         .card-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: var(--text-dark); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .card-desc { font-size: 11px; color: var(--text-grey); margin-bottom: 12px; height: 16px; overflow: hidden; }
         .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
@@ -103,13 +88,32 @@
         .promo-banner { margin: 25px 20px; padding: 0; background: none; cursor: pointer; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); }
         .promo-banner img { width: 100%; height: auto; display: block; object-fit: cover; }
 
-        /* BOTTOM NAV */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 10px 30px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.03); z-index: 100; border-radius: 20px 20px 0 0; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #C0C0C0; cursor: pointer; }
+        /* ===== НИЖНЕЕ МЕНЮ (Floating) ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 20px; left: 20px; right: 20px; /* Отступы для "парения" */
+            
+            background: rgba(255, 255, 255, 0.85); /* Полупрозрачность */
+            backdrop-filter: blur(12px);            /* Блюр фона */
+            -webkit-backdrop-filter: blur(12px);
+            
+            padding: 12px 20px;
+            display: flex; justify-content: space-around; /* Равномерное распределение */
+            align-items: center;
+            
+            border-radius: 50px; /* Сосиска */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 900;
+            border: 1px solid rgba(255,255,255,0.6);
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #C0C0C0; cursor: pointer; position: relative; }
         .nav-item.active { color: var(--primary); }
-        .nav-icon svg { width: 24px; height: 24px; fill: currentColor; }
+        .nav-item.active::after {
+            content: ''; position: absolute; bottom: -6px; width: 4px; height: 4px; background: var(--primary); border-radius: 50%;
+        }
+        .nav-icon svg { width: 26px; height: 26px; fill: currentColor; }
 
-        /* MODALS (Исправленные) */
+        /* MODALS */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); z-index: 1000; align-items: flex-end; }
         .modal.active { display: flex; }
         .modal-content { background: white; width: 100%; padding: 20px; border-radius: 25px 25px 0 0; animation: slideUp 0.3s; max-height: 90vh; overflow-y: auto; }
@@ -525,17 +529,19 @@
             renderProducts();
             loadAddress();
             
-            // ВОТ ИСПРАВЛЕННЫЙ КОД ЗАКРЫТИЯ МОДАЛОК
-            // Мы вешаем событие на window, чтобы ловить все клики
-            window.onclick = function(event) {
-                // Если клик был по элементу с классом 'modal'
-                if (event.target.classList.contains('modal')) {
-                    // И это НЕ окно авторизации (его нельзя закрыть кликом)
-                    if (event.target.id !== 'authModal') {
-                        event.target.classList.remove('active');
+            // ===== САМОЕ НАДЕЖНОЕ РЕШЕНИЕ ДЛЯ ЗАКРЫТИЯ ОКОН =====
+            // Мы находим все модалки и вешаем на каждую свой личный обработчик клика
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    // Если кликнули по самому затемненному фону (modal), а не внутри контента
+                    if (e.target === modal) {
+                        // И это не окно авторизации
+                        if (modal.id !== 'authModal') {
+                            modal.classList.remove('active');
+                        }
                     }
-                }
-            };
+                });
+            });
         });
 
         function checkAuth() {
